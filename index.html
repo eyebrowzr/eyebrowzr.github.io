@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EYEBROWZR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff00c8;
+      --neon-yellow: #ffe600;
+      --bg: #070714;
+      --card-bg: #0e0e2a;
+      --text: #e0e0ff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* CRT scanline overlay */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0,0,0,0.08) 2px,
+        rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.2rem 2.5rem;
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+      position: sticky;
+      top: 0;
+      background: rgba(7,7,20,0.92);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+    }
+
+    .nav-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--neon-cyan); }
+
+    /* ── HERO ── */
+    .hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 7rem 2rem 5rem;
+      position: relative;
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.05) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    .hero-eyebrow {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(2.2rem, 8vw, 5rem);
+      color: #fff;
+      text-shadow:
+        0 0 20px var(--neon-cyan),
+        0 0 60px rgba(0,245,255,0.4);
+      letter-spacing: 4px;
+      line-height: 1.2;
+      position: relative;
+      animation: flicker 6s infinite;
+    }
+
+    @keyframes flicker {
+      0%,95%,100% { opacity: 1; }
+      96% { opacity: 0.85; }
+      97% { opacity: 1; }
+      98% { opacity: 0.7; }
+      99% { opacity: 1; }
+    }
+
+    .hero-tagline {
+      margin-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--neon-pink);
+      font-family: 'Press Start 2P', monospace;
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px var(--neon-pink);
+      position: relative;
+    }
+
+    .hero-sub {
+      margin-top: 1.2rem;
+      font-size: 1rem;
+      color: rgba(224,224,255,0.6);
+      max-width: 480px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+
+    .btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      padding: 0.9rem 1.6rem;
+      border: 2px solid;
+      text-decoration: none;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+      display: inline-block;
+    }
+    .btn:hover { transform: translateY(-3px); }
+
+    .btn-primary {
+      background: var(--neon-cyan);
+      border-color: var(--neon-cyan);
+      color: var(--bg);
+      box-shadow: 0 0 20px rgba(0,245,255,0.5);
+    }
+    .btn-primary:hover { box-shadow: 0 0 35px rgba(0,245,255,0.8); }
+
+    .btn-secondary {
+      background: transparent;
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+      box-shadow: 0 0 15px rgba(255,0,200,0.3);
+    }
+    .btn-secondary:hover { box-shadow: 0 0 30px rgba(255,0,200,0.6); }
+
+    /* ── PIXEL DIVIDER ── */
+    .pixel-divider {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 1rem 0;
+    }
+    .pixel-divider span {
+      width: 8px; height: 8px;
+      background: var(--neon-cyan);
+      opacity: 0.4;
+      animation: pulse-dot 2s infinite;
+    }
+    .pixel-divider span:nth-child(2) { animation-delay: 0.2s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(3) { animation-delay: 0.4s; }
+    .pixel-divider span:nth-child(4) { animation-delay: 0.6s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes pulse-dot {
+      0%,100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    /* ── SECTIONS ── */
+    section { padding: 4rem 2rem; max-width: 1100px; margin: 0 auto; }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+    }
+
+    .section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: #fff;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 0 15px rgba(0,245,255,0.3);
+    }
+
+    /* ── CARDS ── */
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid rgba(0,245,255,0.15);
+      padding: 1.8rem;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .card:hover {
+      border-color: var(--neon-cyan);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,245,255,0.1);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .card-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.7rem;
+      color: var(--neon-cyan);
+      margin-bottom: 0.8rem;
+      letter-spacing: 1px;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: rgba(224,224,255,0.6);
+      line-height: 1.7;
+    }
+
+    .card-tag {
+      display: inline-block;
+      margin-top: 1rem;
+      font-size: 0.65rem;
+      font-family: 'Press Start 2P', monospace;
+      color: var(--neon-pink);
+      opacity: 0.8;
+    }
+
+    /* ── BLOG PREVIEW ── */
+    .blog-post {
+      background: var(--card-bg);
+      border: 1px solid rgba(255,0,200,0.15);
+      padding: 1.8rem;
+      margin-bottom: 1rem;
+      transition: border-color 0.2s, transform 0.2s;
+      cursor: pointer;
+    }
+    .blog-post:hover {
+      border-color: var(--neon-pink);
+      transform: translateX(6px);
+    }
+
+    .blog-date {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--neon-yellow);
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .blog-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 0.5rem;
+    }
+
+    .blog-excerpt {
+      font-size: 0.85rem;
+      color: rgba(224,224,255,0.55);
+      line-height: 1.6;
+    }
+
+    /* ── ABOUT STRIP ── */
+    .about-strip {
+      background: var(--card-bg);
+      border-top: 1px solid rgba(0,245,255,0.1);
+      border-bottom: 1px solid rgba(0,245,255,0.1);
+      padding: 3.5rem 2rem;
+      text-align: center;
+    }
+
+    .about-strip p {
+      max-width: 600px;
+      margin: 1rem auto 0;
+      font-size: 0.95rem;
+      color: rgba(224,224,255,0.6);
+      line-height: 1.8;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      border-top: 1px solid rgba(0,245,255,0.1);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      color: rgba(224,224,255,0.3);
+      letter-spacing: 2px;
+    }
+
+    footer span { color: var(--neon-pink); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">EYEBROWZR</a>
+    <ul class="nav-links">
+      <li><a href="#music">Music</a></li>
+      <li><a href="#games">Games</a></li>
+      <li><a href="#blog">Blog</a></li>
+      <li><a href="#about">About</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-eyebrow">EYEBROWZR</div>
+    <div class="hero-tagline">// CHIPTUNE · GAMES · CHAOS //</div>
+    <p class="hero-sub">8-bit souls in a 16-bit world. Music, games, and the creative process — all built with a little help from the machines.</p>
+    <div class="hero-btns">
+      <a href="#music" class="btn btn-primary">▶ LISTEN NOW</a>
+      <a href="#games" class="btn btn-secondary">▣ PLAY GAMES</a>
+    </div>
+  </div>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- MUSIC -->
+  <section id="music">
+    <div class="section-label">// 01 //</div>
+    <div class="section-title">MUSIC</div>
+    <div class="cards">
+      <a class="card" href="#">
+        <span class="card-icon">🎵</span>
+        <div class="card-title">LATEST TRACK</div>
+        <div class="card-desc">Chiptune-inspired electronic music pulling from the NES and SNES era. Square waves, catchy melodies, modern drops.</div>
+        <span class="card-tag">▶ STREAM</span>
+      </a>
+      <a class="card" href="#">
+        <span class="card-icon">💿</span>
+        <div class="card-title">FULL CATALOG</div>
+        <div class="card-desc">All releases, experiments, and works in progress. A growing archive of 8-bit and 16-bit influenced electronic music.</div>
+        <span class="card-tag">▶ BROWSE</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- GAMES -->
+  <section id="games">
+    <div class="section-label">// 02 //</div>
+    <div class="section-title">GAMES</div>
+    <div class="cards">
+      <a class="card" href="#">
+        <span class="card-icon">🃏</span>
+        <div class="card-title">CARD GAME</div>
+        <div class="card-desc">A mobile card game designed from scratch using AI as the development engine. Strategic, stylized, and coming soon.</div>
+        <span class="card-tag">⏳ COMING SOON</span>
+      </a>
+      <a class="card" href="#">
+        <span class="card-icon">🕹️</span>
+        <div class="card-title">MORE COMING</div>
+        <div class="card-desc">Future projects in the works. Games that match the EYEBROWZR aesthetic — retro feel, modern execution.</div>
+        <span class="card-tag">👀 STAY TUNED</span>
+      </a>
+    </div>
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- BLOG -->
+  <section id="blog">
+    <div class="section-label">// 03 //</div>
+    <div class="section-title">DEV DIARY</div>
+    <div class="blog-post">
+      <div class="blog-date">ENTRY 001 — 2026</div>
+      <div class="blog-title">Why I let an AI build my game (and what that actually means)</div>
+      <div class="blog-excerpt">The creative process behind using Claude as a development partner — how I went from an idea to a working card game prototype without writing a line of code myself.</div>
+    </div>
+    <div class="blog-post">
+      <div class="blog-date">ENTRY 002 — 2026</div>
+      <div class="blog-title">Making chiptune in 2026: paying tribute without being a museum piece</div>
+      <div class="blog-excerpt">How I approach writing music that sounds retro but still feels fresh. The tools, the influences, and the philosophy behind EYEBROWZR's sound.</div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <div class="about-strip" id="about">
+    <div class="section-label" style="text-align:center;">// 04 //</div>
+    <div class="section-title" style="text-align:center; margin-bottom:0;">ABOUT EYEBROWZR</div>
+    <p>One person. Chiptune obsession. A card game built with AI. This is a creative playground for music, games, and documenting what happens when you give a non-developer a very powerful set of tools.</p>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 EYEBROWZR &nbsp;·&nbsp; MADE WITH <span>♥</span> AND MACHINE INTELLIGENCE
+  </footer>
+
+</body>
+</html>
