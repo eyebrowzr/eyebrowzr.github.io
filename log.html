@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EYEBROWZR — The Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff00c8;
+      --neon-yellow: #ffe600;
+      --bg: #070714;
+      --card-bg: #0e0e2a;
+      --text: #e0e0ff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.8rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+      position: sticky;
+      top: 0;
+      background: rgba(7,7,20,0.92);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      width: 100%;
+    }
+
+    .nav-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--neon-cyan); }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 3rem 2rem 1rem;
+      max-width: 800px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-cyan);
+      letter-spacing: 3px;
+      opacity: 0.7;
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1.1rem, 4vw, 1.8rem);
+      color: #fff;
+      text-shadow: 0 0 15px rgba(0,245,255,0.3);
+      margin-bottom: 0.5rem;
+    }
+
+    /* ENTRY */
+    .entry {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+
+    .entry-meta {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--neon-pink);
+      letter-spacing: 3px;
+      opacity: 0.7;
+      margin-bottom: 0.8rem;
+    }
+
+    .entry-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(0.7rem, 2.5vw, 1rem);
+      color: #fff;
+      letter-spacing: 1px;
+      margin-bottom: 2rem;
+      line-height: 1.6;
+      text-shadow: 0 0 10px rgba(0,245,255,0.2);
+    }
+
+    .entry-body {
+      font-size: 0.95rem;
+      line-height: 1.9;
+      color: rgba(224,224,255,0.8);
+    }
+
+    .entry-body p {
+      margin-bottom: 1.4rem;
+    }
+
+    .entry-sig {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+      margin-top: 2rem;
+      text-shadow: 0 0 8px var(--neon-cyan);
+    }
+
+    /* PIXEL DIVIDER */
+    .pixel-divider {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 1.5rem 0;
+    }
+    .pixel-divider span {
+      width: 8px; height: 8px;
+      background: var(--neon-cyan);
+      opacity: 0.4;
+      animation: pulse-dot 2s infinite;
+    }
+    .pixel-divider span:nth-child(2) { animation-delay: 0.2s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(3) { animation-delay: 0.4s; }
+    .pixel-divider span:nth-child(4) { animation-delay: 0.6s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(5) { animation-delay: 0.8s; }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    /* CAROUSEL */
+    .carousel-section {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem 1.5rem 3rem;
+    }
+
+    .carousel-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(0.7rem, 2.5vw, 1rem);
+      color: var(--neon-pink);
+      letter-spacing: 3px;
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .carousel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(0,245,255,0.15);
+      background: var(--card-bg);
+    }
+
+    .carousel-track {
+      display: flex;
+      transition: transform 0.4s ease;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+      gap: 1rem;
+    }
+
+    .carousel-slide img {
+      image-rendering: pixelated;
+      max-height: 220px;
+      width: auto;
+      max-width: 90%;
+      filter: drop-shadow(0 0 12px #ff00c8);
+    }
+
+    .carousel-caption {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: rgba(224,224,255,0.5);
+      letter-spacing: 2px;
+      text-align: center;
+      line-height: 1.8;
+    }
+
+    /* CAROUSEL CONTROLS */
+    .carousel-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1rem 0 0.5rem;
+    }
+
+    .carousel-btn {
+      background: transparent;
+      border: 1px solid rgba(0,245,255,0.3);
+      color: var(--neon-cyan);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      padding: 0.5rem 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .carousel-btn:hover {
+      border-color: var(--neon-cyan);
+      background: rgba(0,245,255,0.05);
+    }
+
+    .carousel-dots {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px; height: 8px;
+      background: rgba(0,245,255,0.2);
+      border: 1px solid rgba(0,245,255,0.3);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .dot.active { background: var(--neon-cyan); }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      border-top: 1px solid rgba(0,245,255,0.1);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      color: rgba(224,224,255,0.3);
+      letter-spacing: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">EYEBROWZR</a>
+    <ul class="nav-links">
+      <li><a href="index.html">HOME</a></li>
+      <li><a href="music.html">MUSIC</a></li>
+      <li><a href="index.html#games">GAMES</a></li>
+      <li><a href="index.html#about">ABOUT</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="section-label">// THE LOG //</div>
+    <div class="section-title">ENTRY 001</div>
+  </div>
+
+  <!-- ENTRY -->
+  <div class="entry">
+    <div class="entry-meta">// JUNE 2026 //</div>
+    <div class="entry-title">THE BIRTH OF EYEBROWZR</div>
+    <div class="entry-body">
+      <p>I've been making music for a long time. Half finished projects, songs that lived on hard drives and never saw the light of day. A lifelong passion for video games and a head full of game ideas that never quite made it off the drawing board. The usual story.</p>
+      <p>EYEBROWZR started as a way to stop overthinking and just ship things. Give it a name, give it a face, separate it from my ego enough that I could actually put it out into the world without second guessing every decision.</p>
+      <p>What started as an alias became something more — a brand, a persona, an aesthetic. A lens that everything passes through. The music sounds a certain way because of it. The games look a certain way because of it.</p>
+      <p>What you're looking at now is an artistic playground and a carefully constructed ecosystem — music, art, and games feeding into each other, one project fueling the next.</p>
+      <p>Stick around, the adventure is just getting started.</p>
+    </div>
+    <div class="entry-sig">— EYEBROWZR</div>
+  </div>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- CAROUSEL -->
+  <div class="carousel-section">
+    <div class="carousel-label">// EYEBROWZR — EARLY DESIGNS //</div>
+    <div class="carousel">
+      <div class="carousel-track" id="track">
+
+        <div class="carousel-slide">
+          <img src="assets/log/eye-v1.png" alt="Eyebrowzr V1"/>
+          <div class="carousel-caption">V1 — THE FIRST ATTEMPT<br>LEARNING PIXEL ART FROM SCRATCH</div>
+        </div>
+
+        <div class="carousel-slide">
+          <img src="assets/log/eye-v2.png" alt="Eyebrowzr V2"/>
+          <div class="carousel-caption">V2 — CLEANER AND SLEEKER<br>FINDING THE RIGHT STYLE</div>
+        </div>
+
+        <div class="carousel-slide">
+          <img src="assets/log/eye-v3.png" alt="Eyebrowzr V3"/>
+          <div class="carousel-caption">V3 — THE CYBERNETIC IRIS<br>THE CHARACTER STARTS TO EMERGE</div>
+        </div>
+
+        <div class="carousel-slide">
+          <img src="assets/log/eye-final.png" alt="Eyebrowzr Final"/>
+          <div class="carousel-caption">FINAL — THE HOUSING ARRIVES<br>EYEBROWZR BECOMES A CHARACTER</div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="carousel-controls">
+      <button class="carousel-btn" id="prev">◀</button>
+      <div class="carousel-dots" id="dots"></div>
+      <button class="carousel-btn" id="next">▶</button>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>© 2026 EYEBROWZR</footer>
+
+<script>
+  const track = document.getElementById('track');
+  const slides = track.children;
+  const total = slides.length;
+  const dotsEl = document.getElementById('dots');
+  let current = 0;
+  let timer;
+
+  // build dots
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.addEventListener('click', () => goTo(i));
+    dotsEl.appendChild(d);
+  }
+
+  function goTo(n) {
+    current = (n + total) % total;
+    track.style.transform = `translateX(-${current * 100}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) => {
+      d.classList.toggle('active', i === current);
+    });
+    resetTimer();
+  }
+
+  function resetTimer() {
+    clearInterval(timer);
+    timer = setInterval(() => goTo(current + 1), 10000);
+  }
+
+  document.getElementById('prev').addEventListener('click', () => goTo(current - 1));
+  document.getElementById('next').addEventListener('click', () => goTo(current + 1));
+
+  resetTimer();
+</script>
+
+</body>
+</html>
