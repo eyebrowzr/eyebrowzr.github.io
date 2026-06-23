@@ -75,8 +75,35 @@
       opacity: 0.75;
       transition: opacity 0.2s, color 0.2s;
     }
-    .nav-links a:hover { opacity: 1; color: var(--neon-cyan); }
+    .nav-links a:hover { opacity: 1; color: var(--neon-cyan);
+   }
+.music-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem 2rem;
+  text-align: center;
+  position: relative;
+}
 
+.music-hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+}
+
+.music-hero img {
+  image-rendering: pixelated;
+  width: min(480px, 92vw);
+  height: auto;
+  filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 25px #00f5ff);
+  position: relative;
+}
     /* PAGE HEADER */
     .page-header {
       padding: 3rem 2rem 1rem;
@@ -286,7 +313,17 @@
       <li><a href="index.html#about">ABOUT</a></li>
     </ul>
   </nav>
+  
+<!-- HERO -->
+<div class="music-hero">
+  <div class="music-hero-grid"></div>
+  <img src="wireframe_blink.gif" alt="EYEBROWZR">
+</div>
 
+<div class="pixel-divider">
+  <span></span><span></span><span></span><span></span><span></span>
+</div>
+  
   <!-- PAGE HEADER -->
   <div class="page-header">
     <div class="section-label">// THE LOG //</div>
