@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EYEBROWZR — Music</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff00c8;
+      --neon-yellow: #ffe600;
+      --bg: #070714;
+      --card-bg: #0e0e2a;
+      --text: #e0e0ff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.8rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+      position: sticky;
+      top: 0;
+      background: rgba(7,7,20,0.92);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      width: 100%;
+    }
+
+    .nav-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1.2rem; list-style: none; }
+    .nav-links a {
+      font-size: 0.78rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--neon-cyan); }
+
+    /* PAGE HEADER */
+    .page-header {
+      padding: 3rem 2rem 1rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+    }
+
+    .section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(0.9rem, 3vw, 1.4rem);
+      color: #fff;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 0 15px rgba(0,245,255,0.3);
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 2.5rem 1.5rem;
+      max-width: 1100px;
+      margin: 0 auto;
+      width: 100%;
+      border-bottom: 1px solid rgba(0,245,255,0.08);
+    }
+
+    .sub-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--neon-pink);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      opacity: 0.8;
+    }
+
+    .release-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.8rem;
+      color: #fff;
+      margin-bottom: 0.4rem;
+      letter-spacing: 1px;
+    }
+
+    .release-meta {
+      font-size: 0.8rem;
+      color: rgba(224,224,255,0.5);
+      margin-bottom: 1.2rem;
+      letter-spacing: 1px;
+    }
+
+    /* EMBEDS */
+    .embed-wrap {
+      width: 100%;
+      margin-bottom: 1.5rem;
+      border: 1px solid rgba(0,245,255,0.1);
+    }
+
+    .embed-wrap iframe {
+      width: 100%;
+      display: block;
+      border: none;
+    }
+
+    .video-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .video-item {}
+
+    .video-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+    }
+
+    /* GEAR SECTION */
+    .gear-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .gear-item {
+      background: var(--card-bg);
+      border: 1px solid rgba(0,245,255,0.1);
+      padding: 1.2rem;
+    }
+
+    .gear-name {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-cyan);
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+
+    .gear-desc {
+      font-size: 0.8rem;
+      color: rgba(224,224,255,0.5);
+      line-height: 1.6;
+    }
+
+    /* PIXEL DIVIDER */
+    .pixel-divider {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 1.5rem 0;
+    }
+    .pixel-divider span {
+      width: 8px; height: 8px;
+      background: var(--neon-cyan);
+      opacity: 0.4;
+      animation: pulse-dot 2s infinite;
+    }
+    .pixel-divider span:nth-child(2) { animation-delay: 0.2s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(3) { animation-delay: 0.4s; }
+    .pixel-divider span:nth-child(4) { animation-delay: 0.6s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(5) { animation-delay: 0.8s; }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      border-top: 1px solid rgba(0,245,255,0.1);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      color: rgba(224,224,255,0.3);
+      letter-spacing: 2px;
+    }
+    footer span { color: var(--neon-pink); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">EYEBROWZR</a>
+    <ul class="nav-links">
+      <li><a href="index.html#music">MUSIC</a></li>
+      <li><a href="index.html#games">GAMES</a></li>
+      <li><a href="index.html#blog">THE LOG</a></li>
+      <li><a href="index.html#about">ABOUT</a></li>
+    </ul>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <div class="page-header">
+    <div class="section-label">// 01 //</div>
+    <div class="section-title">MUSIC</div>
+  </div>
+
+  <!-- RELEASES -->
+  <section>
+    <div class="sub-label">// RELEASES //</div>
+
+    <div class="release-title">GLACIER EYES</div>
+    <div class="release-meta">Korg Gadget (Nintendo Switch Edition) · Koala Sampler · 2026</div>
+    <div class="embed-wrap">
+      <iframe
+        scrolling="no"
+        allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//soundcloud.com/eyebrowzr/glacier-eyes&color=%2300f5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true"
+        height="166">
+      </iframe>
+    </div>
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- LIVE PERFORMANCES -->
+  <section>
+    <div class="sub-label">// LIVE //</div>
+    <div class="video-grid">
+      <div class="video-item">
+        <div class="video-label">BIRD ZONE — JOSHUA TREE</div>
+        <div class="embed-wrap">
+          <iframe
+            height="200"
+            src="https://www.youtube.com/embed/rERwodHKnGA"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+      <div class="video-item">
+        <div class="video-label">CLOSER LOOK — LIVEN MEGA SYNTHESIS</div>
+        <div class="embed-wrap">
+          <iframe
+            height="200"
+            src="https://www.youtube.com/embed/cRr7fqsWbBs"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- GEAR -->
+  <section>
+    <div class="sub-label">// GEAR //</div>
+    <div class="gear-grid">
+      <div class="gear-item">
+        <div class="gear-name">KORG GADGET</div>
+        <div class="gear-desc">Nintendo Switch Edition. Full DAW in a cartridge. Used to write and sequence Glacier Eyes entirely on Switch hardware.</div>
+      </div>
+      <div class="gear-item">
+        <div class="gear-name">KOALA SAMPLER</div>
+        <div class="gear-desc">Android tablet. Used for resampling, mixing, and adding production texture to stems recorded from the Switch.</div>
+      </div>
+      <div class="gear-item">
+        <div class="gear-name">LIVEN MEGA SYNTHESIS</div>
+        <div class="gear-desc">Sonicware. Groovebox used for the Bird Zone live performance. Gate knobs and keyboard roll for real time expression.</div>
+      </div>
+      <div class="gear-item">
+        <div class="gear-name">ABLETON LIVE</div>
+        <div class="gear-desc">Desktop DAW used for final polish, fade outs, and mastering prep before release.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 EYEBROWZR &nbsp;·&nbsp; MADE WITH <span>♥</span> AND MACHINE INTELLIGENCE
+  </footer>
+
+</body>
+</html>
