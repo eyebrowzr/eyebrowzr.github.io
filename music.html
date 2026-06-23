@@ -77,9 +77,38 @@
     }
     .nav-links a:hover, .nav-links a.active { opacity: 1; color: var(--neon-cyan); }
 
+    /* HERO */
+    .music-hero {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem 2rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .music-hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,245,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,245,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
+    }
+
+    .music-hero img {
+      image-rendering: pixelated;
+      width: min(480px, 92vw);
+      height: auto;
+      filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 25px #00f5ff);
+      position: relative;
+    }
+
     /* PAGE HEADER */
     .page-header {
-      padding: 3rem 2rem 1rem;
+      padding: 1.5rem 2rem 0.5rem;
       max-width: 1100px;
       margin: 0 auto;
       width: 100%;
@@ -97,7 +126,7 @@
 
     .section-title {
       font-family: 'Press Start 2P', monospace;
-      font-size: clamp(0.9rem, 3vw, 1.4rem);
+      font-size: clamp(1.1rem, 4vw, 1.8rem);
       color: #fff;
       margin-bottom: 2.5rem;
       text-shadow: 0 0 15px rgba(0,245,255,0.3);
@@ -114,7 +143,7 @@
 
     .sub-label {
       font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
+      font-size: clamp(0.7rem, 2.5vw, 1rem);
       color: var(--neon-pink);
       letter-spacing: 3px;
       text-transform: uppercase;
@@ -156,8 +185,6 @@
       gap: 1.5rem;
     }
 
-    .video-item {}
-
     .video-label {
       font-family: 'Press Start 2P', monospace;
       font-size: 0.55rem;
@@ -167,7 +194,7 @@
       opacity: 0.7;
     }
 
-    /* GEAR SECTION */
+    /* GEAR */
     .gear-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -175,10 +202,21 @@
       margin-top: 1rem;
     }
 
-    .gear-item {
+    a.gear-item {
       background: var(--card-bg);
-      border: 1px solid rgba(0,245,255,0.1);
+      border: 1px solid rgba(0,245,255,0.15);
       padding: 1.2rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    a.gear-item:hover {
+      border-color: var(--neon-cyan);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 30px rgba(0,245,255,0.1);
     }
 
     .gear-name {
@@ -227,7 +265,6 @@
       color: rgba(224,224,255,0.3);
       letter-spacing: 2px;
     }
-    footer span { color: var(--neon-pink); }
   </style>
 </head>
 <body>
@@ -236,12 +273,22 @@
   <nav>
     <a class="nav-logo" href="index.html">EYEBROWZR</a>
     <ul class="nav-links">
-      <li><a href="index.html#music">MUSIC</a></li>
+      <li><a href="index.html">HOME</a></li>
       <li><a href="index.html#games">GAMES</a></li>
       <li><a href="index.html#blog">THE LOG</a></li>
       <li><a href="index.html#about">ABOUT</a></li>
     </ul>
   </nav>
+
+  <!-- HERO -->
+  <div class="music-hero">
+    <div class="music-hero-grid"></div>
+    <img src="wireframe_blink.gif" alt="EYEBROWZR Music">
+  </div>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
 
   <!-- PAGE HEADER -->
   <div class="page-header">
@@ -252,7 +299,6 @@
   <!-- RELEASES -->
   <section>
     <div class="sub-label">// RELEASES //</div>
-
     <div class="release-title">GLACIER EYES</div>
     <div class="release-meta">Korg Gadget (Nintendo Switch Edition) · Koala Sampler · 2026</div>
     <div class="embed-wrap">
@@ -269,12 +315,11 @@
     <span></span><span></span><span></span><span></span><span></span>
   </div>
 
-  <!-- LIVE PERFORMANCES -->
+  <!-- LIVE -->
   <section>
     <div class="sub-label">// LIVE //</div>
     <div class="video-grid">
       <div class="video-item">
-        <div class="video-label">BIRD ZONE — JOSHUA TREE</div>
         <div class="embed-wrap">
           <iframe
             height="200"
@@ -285,7 +330,6 @@
         </div>
       </div>
       <div class="video-item">
-        <div class="video-label">CLOSER LOOK — LIVEN MEGA SYNTHESIS</div>
         <div class="embed-wrap">
           <iframe
             height="200"
@@ -306,28 +350,28 @@
   <section>
     <div class="sub-label">// GEAR //</div>
     <div class="gear-grid">
-      <div class="gear-item">
+      <a class="gear-item" href="https://www.korg.com/us/products/software/korg_gadget_for_nintendo_switch/" target="_blank" rel="noopener noreferrer">
         <div class="gear-name">KORG GADGET</div>
-        <div class="gear-desc">Nintendo Switch Edition. Full DAW in a handheld gaming system. Used to write and sequence Glacier Eyes.</div>
-      </div>
-      <div class="gear-item">
+        <div class="gear-desc">Nintendo Switch Edition. Full DAW in a cartridge. Used to write and sequence Glacier Eyes entirely on Switch hardware.</div>
+      </a>
+      <a class="gear-item" href="https://www.koalasampler.com" target="_blank" rel="noopener noreferrer">
         <div class="gear-name">KOALA SAMPLER</div>
         <div class="gear-desc">Android tablet. Used for resampling, mixing, and adding production texture to stems recorded from the Switch.</div>
-      </div>
-      <div class="gear-item">
+      </a>
+      <a class="gear-item" href="https://sonicware.jp/products/liven-mega-synthesis" target="_blank" rel="noopener noreferrer">
         <div class="gear-name">LIVEN MEGA SYNTHESIS</div>
         <div class="gear-desc">Sonicware. Groovebox used for the Bird Zone live performance. Gate knobs and keyboard roll for real time expression.</div>
-      </div>
-      <div class="gear-item">
+      </a>
+      <a class="gear-item" href="https://www.ableton.com" target="_blank" rel="noopener noreferrer">
         <div class="gear-name">ABLETON LIVE</div>
-        <div class="gear-desc">Desktop DAW used for final polish and mastering prep before release.</div>
-      </div>
+        <div class="gear-desc">Desktop DAW used for final polish, fade outs, and mastering prep before release.</div>
+      </a>
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    © 2026 EYEBROWZR &nbsp;·&nbsp;
+    © 2026 EYEBROWZR
   </footer>
 
 </body>
