@@ -27,10 +27,8 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 0;
     }
 
-    /* CRT scanlines — only on body layer, below z-index 10 */
     body::after {
       content: '';
       position: fixed;
@@ -52,7 +50,7 @@
       align-items: center;
     }
 
-    /* MONITOR — add back 100px height */
+    /* MONITOR */
     #monitor {
       width: 100%;
       background: #06060f;
@@ -107,52 +105,55 @@
     }
     @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
 
-    /* LOGO AREA — inside monitor */
-    #logo-area {
+    /* LOGO + ARM CONTAINER — both scale together */
+    #logo-arm-wrap {
+      position: relative;
       width: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 50px;
+      max-width: 480px;
       opacity: 0;
       transition: opacity 0.5s;
+    }
+
+    /* LOGO fills container */
+    #logo-area {
+      width: 100%;
+      display: block;
       position: relative;
     }
 
     #logo-area img {
       width: 100%;
-      max-width: 480px;
       height: auto;
       image-rendering: pixelated;
       filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 20px #00f5ff);
+      display: none;
     }
 
-    /* ARM LAYER — position handled by JS */
+    /* ARM positioned as % of container, scales with logo */
     #arm-layer {
       position: absolute;
-      top: -60px;
-      width: min(180px, 34vw);
+      /* O gap at ~67% from left */
+      left: 67%;
+      transform: translateX(-50%);
+      /* top offset — arm hangs above logo */
+      bottom: 30%;
+      width: 30%; /* arm is ~30% width of logo */
       z-index: 10;
       pointer-events: none;
-      transform: translateX(-50%);
     }
 
     #arm-layer img {
       width: 100%;
       height: auto;
       image-rendering: pixelated;
-      position: absolute;
-      top: 0;
-      left: 0;
       display: none;
     }
 
     #arm-layer img.visible {
       display: block;
-      position: relative;
     }
 
-    /* KEYBOARD PANEL — fixed height to prevent layout shift */
+    /* KEYBOARD PANEL */
     #keyboard {
       width: 100%;
       background: #08081a;
@@ -165,7 +166,6 @@
       justify-content: center;
       align-items: center;
       gap: 1rem;
-      flex-wrap: wrap;
       box-shadow: 0 6px 30px rgba(0,0,0,0.5);
       position: relative;
       z-index: 2;
@@ -200,7 +200,6 @@
       border-color: var(--neon-pink);
       text-shadow: 0 0 8px var(--neon-pink);
       display: none;
-      box-shadow: 0 0 10px rgba(255,0,200,0.2);
       animation: deactivatepulse 2s infinite;
     }
     @keyframes deactivatepulse {
@@ -226,12 +225,6 @@
     }
     #mute-btn:hover { color: #00f5ff; border-color: #00f5ff; }
 
-    /* SMOOTH TRANSITIONS */
-    .fade-in { animation: fadeIn 0.5s ease forwards; }
-    .fade-out { animation: fadeOut 0.5s ease forwards; }
-    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
-    @keyframes fadeOut { from{opacity:1} to{opacity:0} }
-
     @keyframes glitch {
       0%{transform:translate(0);filter:none}
       25%{transform:translate(-2px,1px);filter:hue-rotate(90deg)}
@@ -247,67 +240,54 @@
 <button id="mute-btn"></button>
 
 <div id="scene">
-
-  <!-- MONITOR -->
   <div id="monitor">
+
     <div id="terminal">
       <span class="tline" id="l1"></span>
       <span class="tline" id="l2"></span>
       <span class="tline" id="l3"></span>
       <span class="cursor" id="cur"></span>
     </div>
-    <div id="logo-area">
-      <img id="logo-anim" src="eyebrowzr_wireframe_animation_no_eye.gif" alt="EYEBROWZR" style="display:none;"/>
-      <img id="logo-static" src="eyebrowzr_wireframe_no_eye.png" alt="EYEBROWZR" style="display:none;"/>
+
+    <!-- LOGO + ARM wrapped together so they scale as one unit -->
+    <div id="logo-arm-wrap">
+      <div id="logo-area">
+        <img id="logo-anim"   src="eyebrowzr_wireframe_animation_no_eye.gif" alt="EYEBROWZR"/>
+        <img id="logo-static" src="eyebrowzr_wireframe_no_eye.png"           alt="EYEBROWZR"/>
+      </div>
+      <div id="arm-layer">
+        <img id="arm-gif"     src="eyebrowzr_arm.gif"           alt="arm"/>
+        <img id="idle-gif"    src="eyebrowzr_arm_idle_loop.gif" alt="idle"/>
+        <img id="retract-gif" src="eyebrowzr_arm_retract.gif"   alt="retract"/>
+      </div>
     </div>
+
   </div>
 
-  <!-- ARM LAYER — floats in front of monitor -->
-  <div id="arm-layer">
-    <img id="arm-gif"     src="eyebrowzr_arm.gif"            alt="arm"/>
-    <img id="idle-gif"    src="eyebrowzr_arm_idle_loop.gif"  alt="idle"/>
-    <img id="retract-gif" src="eyebrowzr_arm_retract.gif"    alt="retract"/>
-  </div>
-
-  <!-- KEYBOARD PANEL -->
   <div id="keyboard">
     <button class="splash-btn" id="init-btn">[ INITIALIZE ]</button>
     <button class="splash-btn" id="deactivate-btn">[ DEACTIVATE ]</button>
   </div>
-
 </div>
 
 <script>
-  //  DYNAMIC ARM POSITIONING 
-  // O gap is at ~67% from left of the logo image
-  const O_GAP_RATIO = 0.67;
+  //  ELEMENTS 
+  const initBtn       = document.getElementById('init-btn');
+  const deactivateBtn = document.getElementById('deactivate-btn');
+  const armGif        = document.getElementById('arm-gif');
+  const idleGif       = document.getElementById('idle-gif');
+  const retractGif    = document.getElementById('retract-gif');
+  const logoAnim      = document.getElementById('logo-anim');
+  const logoStatic    = document.getElementById('logo-static');
+  const logoArmWrap   = document.getElementById('logo-arm-wrap');
+  const terminal      = document.getElementById('terminal');
 
-  function positionArm() {
-    const logo = document.getElementById('logo-static');
-    const armLayer = document.getElementById('arm-layer');
-    const scene = document.getElementById('scene');
+  //  TIMINGS 
+  const ARM_DURATION     = 9000;
+  const RETRACT_DURATION = 4300;
+  const LASER_DURATION   = 5800;
 
-    // Get logo rendered bounds
-    const logoRect = logo.getBoundingClientRect();
-    const sceneRect = scene.getBoundingClientRect();
-
-    // Calculate O gap position relative to scene
-    const oGapX = (logoRect.left - sceneRect.left) + (logoRect.width * O_GAP_RATIO);
-
-    // Set arm left position
-    armLayer.style.left = oGapX + 'px';
-  }
-
-  // Run after logo loads and on resize/rotate
-  const logoStatic = document.getElementById('logo-static');
-  logoStatic.addEventListener('load', positionArm);
-  window.addEventListener('resize', positionArm);
-  window.addEventListener('orientationchange', () => {
-    setTimeout(positionArm, 300); // small delay for orientation to settle
-  });
-
-  // Run immediately in case image is already cached
-  if (logoStatic.complete) positionArm();
+  //  MUTE 
   let muted = false;
   document.getElementById('mute-btn').onclick = () => {
     muted = !muted;
@@ -334,28 +314,7 @@
   }
   setTimeout(runTerminal, 500);
 
-  //  TIMINGS 
-  const ARM_DURATION     = 9000;
-  const RETRACT_DURATION = 4300;
-  const LASER_DURATION   = 5800;
-
-  //  ELEMENTS 
-  const initBtn       = document.getElementById('init-btn');
-  const deactivateBtn = document.getElementById('deactivate-btn');
-  const armGif        = document.getElementById('arm-gif');
-  const idleGif       = document.getElementById('idle-gif');
-  const retractGif    = document.getElementById('retract-gif');
-  const logoAnim      = document.getElementById('logo-anim');
-  const logoStatic    = document.getElementById('logo-static');
-  const logoArea      = document.getElementById('logo-area');
-  const terminal      = document.getElementById('terminal');
-
-  function lockBtns() {
-    initBtn.disabled = true;
-    deactivateBtn.disabled = true;
-  }
-
-  // Force GIF to restart from frame 1 by resetting src
+  //  HELPERS 
   function restartGif(el) {
     const src = el.src;
     el.src = '';
@@ -363,21 +322,15 @@
   }
 
   function showArm(el) {
-    ['arm-gif','idle-gif','retract-gif'].forEach(id => {
-      const img = document.getElementById(id);
-      img.classList.remove('visible');
-    });
+    [armGif, idleGif, retractGif].forEach(img => img.classList.remove('visible'));
     restartGif(el);
     el.classList.add('visible');
   }
 
-  function show(el) {
-    el.style.display = 'block';
-  }
-
-  function hide(el, cb) {
-    el.style.display = 'none';
-    if (cb) cb();
+  function setTerminal(l1='', l2='', l3='') {
+    document.getElementById('l1').textContent = l1;
+    document.getElementById('l2').textContent = l2;
+    document.getElementById('l3').textContent = l3;
   }
 
   function glitchTerminal(cb) {
@@ -396,72 +349,60 @@
     }, 800);
   }
 
-  function setTerminal(l1='', l2='', l3='') {
-    document.getElementById('l1').textContent = l1;
-    document.getElementById('l2').textContent = l2;
-    document.getElementById('l3').textContent = l3;
-  }
-
-  //  INITIALIZE 
-  let initialized = false;
+  //  INITIALIZE — one press only 
   initBtn.addEventListener('click', () => {
-    if (initialized) return;
-    initialized = true;
-    lockBtns();
-    document.getElementById('cur').style.display = 'none';
+    initBtn.disabled = true;
     initBtn.style.display = 'none';
+    document.getElementById('cur').style.display = 'none';
 
     glitchTerminal(() => {
       setTerminal('> INITIALIZING EYEBROWZR...');
 
-      // Show arm
+      // Show wrap, start arm
+      logoArmWrap.style.opacity = '1';
       showArm(armGif);
 
-      // After arm finishes
+      // After arm settles swap to idle + start laser trace
       setTimeout(() => {
         showArm(idleGif);
+        restartGif(logoAnim);
+        logoAnim.style.display = 'block';
+        setTerminal('> RENDERING WORDMARK...');
 
-          // Show logo animation — restart from frame 1
-          logoArea.style.opacity = '1';
-          restartGif(logoAnim);
-          show(logoAnim);
-          setTerminal('> RENDERING WORDMARK...');
+        // After laser trace swap to static logo
+        setTimeout(() => {
+          logoAnim.style.display = 'none';
+          logoStatic.style.display = 'block';
+          setTerminal('> SYSTEM ONLINE. ', '> WELCOME TO EYEBROWZR');
 
-          // After laser trace
-          setTimeout(() => {
-            hide(logoAnim, () => show(logoStatic));
-            setTerminal('> SYSTEM ONLINE. ', '> WELCOME TO EYEBROWZR');
+          // Show deactivate — one press only
+          deactivateBtn.style.display = 'block';
 
-            // Show deactivate
-            deactivateBtn.style.display = 'block';
-            deactivateBtn.disabled = false;
-
-          }, LASER_DURATION);
+        }, LASER_DURATION);
 
       }, ARM_DURATION);
     });
   });
 
-  //  DEACTIVATE 
+  //  DEACTIVATE — one press only 
   deactivateBtn.addEventListener('click', () => {
-    lockBtns();
+    deactivateBtn.disabled = true;
     deactivateBtn.style.display = 'none';
 
-    hide(idleGif);
-    restartGif(retractGif);
+    // Hide logo
+    logoStatic.style.display = 'none';
+    logoArmWrap.style.opacity = '0';
+
+    // Retract arm
     showArm(retractGif);
-    hide(logoStatic);
-    logoArea.style.opacity = '0';
     setTerminal('> DEACTIVATING...');
 
+    // After retract — show standby, no reset
     setTimeout(() => {
-      hide(retractGif, () => {
-        initialized = false;
-        setTerminal('> SYSTEM STANDBY.', '> READY TO INITIALIZE');
-        document.getElementById('cur').style.display = 'inline-block';
-        initBtn.style.display = 'block';
-        initBtn.disabled = false;
-      });
+      [armGif, idleGif, retractGif].forEach(img => img.classList.remove('visible'));
+      setTerminal('> SYSTEM STANDBY.', '> READY TO INITIALIZE');
+      document.getElementById('cur').style.display = 'inline-block';
+      // No buttons re-enabled — sequence complete
     }, RETRACT_DURATION);
   });
 </script>
