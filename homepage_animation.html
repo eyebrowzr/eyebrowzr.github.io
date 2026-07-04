@@ -52,13 +52,14 @@
       align-items: center;
     }
 
-    /* MONITOR — reduced height by ~40% */
+    /* MONITOR — add back 100px height */
     #monitor {
       width: 100%;
       background: #06060f;
       border: 3px solid #1a1a3a;
       border-radius: 14px;
       padding: 1rem 1.5rem 1.2rem;
+      min-height: 100px;
       box-shadow:
         0 0 0 6px #0a0a18,
         0 0 0 9px #1a1a3a,
@@ -126,30 +127,35 @@
       filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 20px #00f5ff);
     }
 
-    /* ARM LAYER — in front of monitor, above scanlines */
+    /* ARM LAYER — shifted left 80px, raised 100px */
     #arm-layer {
       position: absolute;
-      /* position arm so eye lands on O gap */
-      /* O gap is ~400/600 = 67% from left of logo */
-      /* logo max-width 480px, so O is ~320px from logo left */
-      /* center arm on that point */
       left: 50%;
-      /* offset: logo starts at center - 240px, O at +320px = center + 80px */
-      transform: translateX(calc(-50% + 80px));
+      transform: translateX(calc(-50% + 0px));
       top: -20px;
       width: 180px;
-      z-index: 10; /* above scanline layer at z-index 5 */
+      z-index: 10;
       pointer-events: none;
     }
 
+    /* Each arm gif stacked absolutely for smooth crossfade */
     #arm-layer img {
       width: 100%;
       height: auto;
       image-rendering: pixelated;
-      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
 
-    /* KEYBOARD PANEL — below monitor */
+    #arm-layer img.visible {
+      opacity: 1;
+      position: relative;
+    }
+
+    /* KEYBOARD PANEL — fixed height to prevent layout shift */
     #keyboard {
       width: 100%;
       background: #08081a;
@@ -157,8 +163,10 @@
       border-top: none;
       border-radius: 0 0 10px 10px;
       padding: 1rem;
+      height: 70px;
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 1rem;
       flex-wrap: wrap;
       box-shadow: 0 6px 30px rgba(0,0,0,0.5);
@@ -321,6 +329,15 @@
     deactivateBtn.disabled = true;
   }
 
+  function showArm(el) {
+    // crossfade between arm gifs using opacity
+    ['arm-gif','idle-gif','retract-gif'].forEach(id => {
+      const img = document.getElementById(id);
+      img.classList.remove('visible');
+    });
+    el.classList.add('visible');
+  }
+
   function show(el) {
     el.style.display = 'block';
     el.classList.remove('fade-out');
@@ -334,7 +351,7 @@
       el.style.display = 'none';
       el.classList.remove('fade-out');
       if (cb) cb();
-    }, 500);
+    }, 300);
   }
 
   function glitchTerminal(cb) {
@@ -372,12 +389,11 @@
       setTerminal('> INITIALIZING EYEBROWZR...');
 
       // Show arm
-      show(armGif);
+      showArm(armGif);
 
       // After arm finishes
       setTimeout(() => {
-        hide(armGif, () => {
-          show(idleGif);
+        showArm(idleGif);
 
           // Show logo animation
           logoArea.style.opacity = '1';
@@ -394,7 +410,7 @@
             deactivateBtn.disabled = false;
 
           }, LASER_DURATION);
-        });
+
       }, ARM_DURATION);
     });
   });
@@ -404,7 +420,8 @@
     lockBtns();
     deactivateBtn.style.display = 'none';
 
-    hide(idleGif, () => show(retractGif));
+    hide(idleGif);
+    showArm(retractGif);
     hide(logoStatic);
     logoArea.style.opacity = '0';
     setTerminal('> DEACTIVATING...');
