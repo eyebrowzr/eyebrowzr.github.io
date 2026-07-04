@@ -127,18 +127,17 @@
       filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 20px #00f5ff);
     }
 
-    /* ARM LAYER — shifted left 80px, raised 100px */
+    /* ARM LAYER — nudge right 40px, up 40px */
     #arm-layer {
       position: absolute;
       left: 50%;
-      transform: translateX(calc(-50% + 0px));
-      top: -20px;
+      transform: translateX(calc(-50% + 40px));
+      top: -60px;
       width: 180px;
       z-index: 10;
       pointer-events: none;
     }
 
-    /* Each arm gif stacked absolutely for smooth crossfade */
     #arm-layer img {
       width: 100%;
       height: auto;
@@ -146,12 +145,11 @@
       position: absolute;
       top: 0;
       left: 0;
-      opacity: 0;
-      transition: opacity 0.3s ease;
+      display: none;
     }
 
     #arm-layer img.visible {
-      opacity: 1;
+      display: block;
       position: relative;
     }
 
@@ -329,29 +327,29 @@
     deactivateBtn.disabled = true;
   }
 
+  // Force GIF to restart from frame 1 by resetting src
+  function restartGif(el) {
+    const src = el.src;
+    el.src = '';
+    el.src = src;
+  }
+
   function showArm(el) {
-    // crossfade between arm gifs using opacity
     ['arm-gif','idle-gif','retract-gif'].forEach(id => {
       const img = document.getElementById(id);
       img.classList.remove('visible');
     });
+    restartGif(el);
     el.classList.add('visible');
   }
 
   function show(el) {
     el.style.display = 'block';
-    el.classList.remove('fade-out');
-    el.classList.add('fade-in');
   }
 
   function hide(el, cb) {
-    el.classList.remove('fade-in');
-    el.classList.add('fade-out');
-    setTimeout(() => {
-      el.style.display = 'none';
-      el.classList.remove('fade-out');
-      if (cb) cb();
-    }, 300);
+    el.style.display = 'none';
+    if (cb) cb();
   }
 
   function glitchTerminal(cb) {
