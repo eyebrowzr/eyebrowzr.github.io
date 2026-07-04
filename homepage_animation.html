@@ -83,7 +83,7 @@
     }
     @keyframes led { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
-    /* TERMINAL */
+    /* TERMINAL — fixed height so monitor never jumps */
     #terminal {
       width: 100%;
       font-family: 'Courier New', monospace;
@@ -91,7 +91,8 @@
       color: var(--green);
       text-shadow: 0 0 6px var(--green);
       line-height: 1.9;
-      min-height: 60px;
+      height: 80px;
+      overflow: hidden;
     }
 
     .tline { display: block; }
