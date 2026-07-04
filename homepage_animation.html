@@ -127,15 +127,14 @@
       filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 20px #00f5ff);
     }
 
-    /* ARM LAYER — nudge right 40px, up 40px */
+    /* ARM LAYER — position handled by JS */
     #arm-layer {
       position: absolute;
-      left: 50%;
-      transform: translateX(calc(-50% + 40px));
       top: -60px;
-      width: 180px;
+      width: min(180px, 34vw);
       z-index: 10;
       pointer-events: none;
+      transform: translateX(-50%);
     }
 
     #arm-layer img {
@@ -279,7 +278,36 @@
 </div>
 
 <script>
-  //  MUTE 
+  //  DYNAMIC ARM POSITIONING 
+  // O gap is at ~67% from left of the logo image
+  const O_GAP_RATIO = 0.67;
+
+  function positionArm() {
+    const logo = document.getElementById('logo-static');
+    const armLayer = document.getElementById('arm-layer');
+    const scene = document.getElementById('scene');
+
+    // Get logo rendered bounds
+    const logoRect = logo.getBoundingClientRect();
+    const sceneRect = scene.getBoundingClientRect();
+
+    // Calculate O gap position relative to scene
+    const oGapX = (logoRect.left - sceneRect.left) + (logoRect.width * O_GAP_RATIO);
+
+    // Set arm left position
+    armLayer.style.left = oGapX + 'px';
+  }
+
+  // Run after logo loads and on resize/rotate
+  const logoStatic = document.getElementById('logo-static');
+  logoStatic.addEventListener('load', positionArm);
+  window.addEventListener('resize', positionArm);
+  window.addEventListener('orientationchange', () => {
+    setTimeout(positionArm, 300); // small delay for orientation to settle
+  });
+
+  // Run immediately in case image is already cached
+  if (logoStatic.complete) positionArm();
   let muted = false;
   document.getElementById('mute-btn').onclick = () => {
     muted = !muted;
@@ -393,8 +421,9 @@
       setTimeout(() => {
         showArm(idleGif);
 
-          // Show logo animation
+          // Show logo animation — restart from frame 1
           logoArea.style.opacity = '1';
+          restartGif(logoAnim);
           show(logoAnim);
           setTerminal('> RENDERING WORDMARK...');
 
@@ -419,6 +448,7 @@
     deactivateBtn.style.display = 'none';
 
     hide(idleGif);
+    restartGif(retractGif);
     showArm(retractGif);
     hide(logoStatic);
     logoArea.style.opacity = '0';
