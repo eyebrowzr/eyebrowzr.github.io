@@ -27,8 +27,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      gap: 0;
     }
 
+    /* CRT scanlines � only on body layer, below z-index 10 */
     body::after {
       content: '';
       position: fixed;
@@ -38,25 +40,25 @@
         rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
       );
       pointer-events: none;
-      z-index: 9999;
+      z-index: 5;
     }
 
-    /* SCENE CONTAINER */
+    /* SCENE */
     #scene {
       position: relative;
-      width: min(520px, 95vw);
+      width: min(560px, 95vw);
       display: flex;
       flex-direction: column;
       align-items: center;
     }
 
-    /* MONITOR */
+    /* MONITOR � reduced height by ~40% */
     #monitor {
       width: 100%;
       background: #06060f;
       border: 3px solid #1a1a3a;
       border-radius: 14px;
-      padding: 1.8rem 1.5rem 2rem;
+      padding: 1rem 1.5rem 1.2rem;
       box-shadow:
         0 0 0 6px #0a0a18,
         0 0 0 9px #1a1a3a,
@@ -65,7 +67,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.2rem;
+      gap: 0.8rem;
       position: relative;
       z-index: 2;
     }
@@ -73,7 +75,7 @@
     #monitor::after {
       content:'';
       position:absolute;
-      bottom:12px; right:18px;
+      bottom:10px; right:16px;
       width:6px; height:6px;
       border-radius:50%;
       background:#00f5ff;
@@ -90,7 +92,7 @@
       color: var(--green);
       text-shadow: 0 0 6px var(--green);
       line-height: 1.9;
-      min-height: 72px;
+      min-height: 60px;
     }
 
     .tline { display: block; }
@@ -104,81 +106,64 @@
     }
     @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
 
-    /* ANIMATION AREA */
-    #anim-area {
-      width: 100%;
-      min-height: 120px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: visible;
-    }
-
-    /* ARM */
-    #arm-gif {
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 180px;
-      height: auto;
-      image-rendering: pixelated;
-      display: none;
-      z-index: 3;
-    }
-
-    /* IDLE */
-    #idle-gif {
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 180px;
-      height: auto;
-      image-rendering: pixelated;
-      display: none;
-      z-index: 3;
-    }
-
-    /* RETRACT */
-    #retract-gif {
-      position: absolute;
-      top: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 180px;
-      height: auto;
-      image-rendering: pixelated;
-      display: none;
-      z-index: 3;
-    }
-
-    /* WIREFRAME LOGO AREA */
+    /* LOGO AREA � inside monitor */
     #logo-area {
       width: 100%;
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 60px;
+      min-height: 50px;
       opacity: 0;
       transition: opacity 0.5s;
+      position: relative;
     }
 
     #logo-area img {
       width: 100%;
-      max-width: 440px;
+      max-width: 480px;
       height: auto;
       image-rendering: pixelated;
       filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 20px #00f5ff);
     }
 
-    /* BUTTONS */
-    .btn-wrap {
+    /* ARM LAYER � in front of monitor, above scanlines */
+    #arm-layer {
+      position: absolute;
+      /* position arm so eye lands on O gap */
+      /* O gap is ~400/600 = 67% from left of logo */
+      /* logo max-width 480px, so O is ~320px from logo left */
+      /* center arm on that point */
+      left: 50%;
+      /* offset: logo starts at center - 240px, O at +320px = center + 80px */
+      transform: translateX(calc(-50% + 80px));
+      top: -20px;
+      width: 180px;
+      z-index: 10; /* above scanline layer at z-index 5 */
+      pointer-events: none;
+    }
+
+    #arm-layer img {
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      display: none;
+    }
+
+    /* KEYBOARD PANEL � below monitor */
+    #keyboard {
+      width: 100%;
+      background: #08081a;
+      border: 2px solid #1a1a3a;
+      border-top: none;
+      border-radius: 0 0 10px 10px;
+      padding: 1rem;
       display: flex;
-      gap: 1rem;
       justify-content: center;
+      gap: 1rem;
       flex-wrap: wrap;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 2;
     }
 
     .splash-btn {
@@ -211,9 +196,14 @@
       text-shadow: 0 0 8px var(--neon-pink);
       display: none;
       box-shadow: 0 0 10px rgba(255,0,200,0.2);
+      animation: deactivatepulse 2s infinite;
+    }
+    @keyframes deactivatepulse {
+      0%,100%{box-shadow:0 0 10px rgba(255,0,200,0.2)}
+      50%{box-shadow:0 0 22px rgba(255,0,200,0.5)}
     }
     #deactivate-btn:hover { background: rgba(255,0,200,0.08); }
-    #deactivate-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    #deactivate-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
 
     /* MUTE */
     #mute-btn {
@@ -231,6 +221,12 @@
     }
     #mute-btn:hover { color: #00f5ff; border-color: #00f5ff; }
 
+    /* SMOOTH TRANSITIONS */
+    .fade-in { animation: fadeIn 0.5s ease forwards; }
+    .fade-out { animation: fadeOut 0.5s ease forwards; }
+    @keyframes fadeIn { from{opacity:0} to{opacity:1} }
+    @keyframes fadeOut { from{opacity:1} to{opacity:0} }
+
     @keyframes glitch {
       0%{transform:translate(0);filter:none}
       25%{transform:translate(-2px,1px);filter:hue-rotate(90deg)}
@@ -243,50 +239,48 @@
 </head>
 <body>
 
-<button id="mute-btn">🔊</button>
+<button id="mute-btn"></button>
 
 <div id="scene">
-  <div id="monitor">
 
-    <!-- TERMINAL -->
+  <!-- MONITOR -->
+  <div id="monitor">
     <div id="terminal">
       <span class="tline" id="l1"></span>
       <span class="tline" id="l2"></span>
       <span class="tline" id="l3"></span>
       <span class="cursor" id="cur"></span>
     </div>
-
-    <!-- ANIMATION AREA -->
-    <div id="anim-area">
-      <img id="arm-gif" src="eyebrowzr_arm.gif" alt="arm"/>
-      <img id="idle-gif" src="eyebrowzr_arm_idle_loop.gif" alt="idle"/>
-      <img id="retract-gif" src="eyebrowzr_arm_retract.gif" alt="retract"/>
-    </div>
-
-    <!-- LOGO AREA -->
     <div id="logo-area">
       <img id="logo-anim" src="eyebrowzr_wireframe_animation_no_eye.gif" alt="EYEBROWZR" style="display:none;"/>
       <img id="logo-static" src="eyebrowzr_wireframe_no_eye.png" alt="EYEBROWZR" style="display:none;"/>
     </div>
-
-    <!-- BUTTONS -->
-    <div class="btn-wrap">
-      <button class="splash-btn" id="init-btn">[ INITIALIZE ]</button>
-      <button class="splash-btn" id="deactivate-btn">[ DEACTIVATE ]</button>
-    </div>
-
   </div>
+
+  <!-- ARM LAYER � floats in front of monitor -->
+  <div id="arm-layer">
+    <img id="arm-gif"     src="eyebrowzr_arm.gif"            alt="arm"/>
+    <img id="idle-gif"    src="eyebrowzr_arm_idle_loop.gif"  alt="idle"/>
+    <img id="retract-gif" src="eyebrowzr_arm_retract.gif"    alt="retract"/>
+  </div>
+
+  <!-- KEYBOARD PANEL -->
+  <div id="keyboard">
+    <button class="splash-btn" id="init-btn">[ INITIALIZE ]</button>
+    <button class="splash-btn" id="deactivate-btn">[ DEACTIVATE ]</button>
+  </div>
+
 </div>
 
 <script>
-  // ── MUTE ──
+  //  MUTE 
   let muted = false;
   document.getElementById('mute-btn').onclick = () => {
     muted = !muted;
-    document.getElementById('mute-btn').textContent = muted ? '🔇' : '🔊';
+    document.getElementById('mute-btn').textContent = muted ? '' : '';
   };
 
-  // ── TERMINAL TYPING ──
+  //  TERMINAL 
   function typeEl(el, text, speed) {
     return new Promise(res => {
       let i = 0;
@@ -306,25 +300,41 @@
   }
   setTimeout(runTerminal, 500);
 
-  // ── TIMINGS (ms) ──
+  //  TIMINGS 
   const ARM_DURATION     = 9000;
   const RETRACT_DURATION = 4300;
   const LASER_DURATION   = 5800;
 
-  // ── ELEMENTS ──
-  const initBtn      = document.getElementById('init-btn');
-  const deactivateBtn= document.getElementById('deactivate-btn');
-  const armGif       = document.getElementById('arm-gif');
-  const idleGif      = document.getElementById('idle-gif');
-  const retractGif   = document.getElementById('retract-gif');
-  const logoAnim     = document.getElementById('logo-anim');
-  const logoStatic   = document.getElementById('logo-static');
-  const logoArea     = document.getElementById('logo-area');
-  const terminal     = document.getElementById('terminal');
+  //  ELEMENTS 
+  const initBtn       = document.getElementById('init-btn');
+  const deactivateBtn = document.getElementById('deactivate-btn');
+  const armGif        = document.getElementById('arm-gif');
+  const idleGif       = document.getElementById('idle-gif');
+  const retractGif    = document.getElementById('retract-gif');
+  const logoAnim      = document.getElementById('logo-anim');
+  const logoStatic    = document.getElementById('logo-static');
+  const logoArea      = document.getElementById('logo-area');
+  const terminal      = document.getElementById('terminal');
 
   function lockBtns() {
     initBtn.disabled = true;
     deactivateBtn.disabled = true;
+  }
+
+  function show(el) {
+    el.style.display = 'block';
+    el.classList.remove('fade-out');
+    el.classList.add('fade-in');
+  }
+
+  function hide(el, cb) {
+    el.classList.remove('fade-in');
+    el.classList.add('fade-out');
+    setTimeout(() => {
+      el.style.display = 'none';
+      el.classList.remove('fade-out');
+      if (cb) cb();
+    }, 500);
   }
 
   function glitchTerminal(cb) {
@@ -343,87 +353,70 @@
     }, 800);
   }
 
-  // ── INITIALIZE ──
+  function setTerminal(l1='', l2='', l3='') {
+    document.getElementById('l1').textContent = l1;
+    document.getElementById('l2').textContent = l2;
+    document.getElementById('l3').textContent = l3;
+  }
+
+  //  INITIALIZE 
   let initialized = false;
   initBtn.addEventListener('click', () => {
     if (initialized) return;
     initialized = true;
     lockBtns();
     document.getElementById('cur').style.display = 'none';
+    initBtn.style.display = 'none';
 
     glitchTerminal(() => {
-      // Clear terminal
-      ['l1','l2','l3'].forEach(id => document.getElementById(id).textContent = '');
-      document.getElementById('l1').textContent = '> INITIALIZING EYEBROWZR...';
+      setTerminal('> INITIALIZING EYEBROWZR...');
 
-      // Hide init button
-      initBtn.style.display = 'none';
+      // Show arm
+      show(armGif);
 
-      // Show arm gif
-      armGif.style.display = 'block';
-
-      // After arm finishes swap to idle
+      // After arm finishes
       setTimeout(() => {
-        armGif.style.display = 'none';
-        idleGif.style.display = 'block';
+        hide(armGif, () => {
+          show(idleGif);
 
-        // Show logo animation
-        logoArea.style.opacity = '1';
-        logoAnim.style.display = 'block';
+          // Show logo animation
+          logoArea.style.opacity = '1';
+          show(logoAnim);
+          setTerminal('> RENDERING WORDMARK...');
 
-        // Update terminal
-        document.getElementById('l1').textContent = '> RENDERING WORDMARK...';
+          // After laser trace
+          setTimeout(() => {
+            hide(logoAnim, () => show(logoStatic));
+            setTerminal('> SYSTEM ONLINE. ', '> WELCOME TO EYEBROWZR');
 
-        // After laser trace swap to static logo
-        setTimeout(() => {
-          logoAnim.style.display = 'none';
-          logoStatic.style.display = 'block';
-          document.getElementById('l1').textContent = '> SYSTEM ONLINE. ✓';
-          document.getElementById('l2').textContent = '> WELCOME TO EYEBROWZR';
+            // Show deactivate
+            deactivateBtn.style.display = 'block';
+            deactivateBtn.disabled = false;
 
-          // Show deactivate button
-          deactivateBtn.style.display = 'block';
-          deactivateBtn.disabled = false;
-
-        }, LASER_DURATION);
-
+          }, LASER_DURATION);
+        });
       }, ARM_DURATION);
     });
   });
 
-  // ── DEACTIVATE ──
+  //  DEACTIVATE 
   deactivateBtn.addEventListener('click', () => {
     lockBtns();
     deactivateBtn.style.display = 'none';
 
-    // Swap idle for retract
-    idleGif.style.display = 'none';
-    retractGif.style.display = 'block';
-
-    // Hide logo
+    hide(idleGif, () => show(retractGif));
+    hide(logoStatic);
     logoArea.style.opacity = '0';
-    logoAnim.style.display = 'none';
-    logoStatic.style.display = 'none';
+    setTerminal('> DEACTIVATING...');
 
-    // Update terminal
-    ['l1','l2','l3'].forEach(id => document.getElementById(id).textContent = '');
-    document.getElementById('l1').textContent = '> DEACTIVATING...';
-
-    // After retract finishes reset everything
     setTimeout(() => {
-      retractGif.style.display = 'none';
-      initialized = false;
-
-      // Reset terminal
-      ['l1','l2','l3'].forEach(id => document.getElementById(id).textContent = '');
-      document.getElementById('l1').textContent = '> SYSTEM STANDBY.';
-      document.getElementById('l2').textContent = '> READY TO INITIALIZE';
-      document.getElementById('cur').style.display = 'inline-block';
-
-      // Show init button again
-      initBtn.style.display = 'block';
-      initBtn.disabled = false;
-
+      hide(retractGif, () => {
+        initialized = false;
+        setTerminal('> SYSTEM STANDBY.', '> READY TO INITIALIZE');
+        document.getElementById('cur').style.display = 'inline-block';
+        initBtn.style.display = 'block';
+        initBtn.disabled = false;
+      });
     }, RETRACT_DURATION);
   });
 </script>
