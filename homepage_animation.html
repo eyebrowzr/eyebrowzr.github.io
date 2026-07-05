@@ -50,38 +50,20 @@
       align-items: center;
     }
 
-    /* MONITOR */
-    #monitor {
-      width: 100%;
-      background: #06060f;
-      border: 3px solid #1a1a3a;
-      border-radius: 14px;
-      padding: 1rem 1.5rem 1.2rem;
-      min-height: 100px;
-      box-shadow:
-        0 0 0 6px #0a0a18,
-        0 0 0 9px #1a1a3a,
-        0 0 50px rgba(0,245,255,0.12),
-        inset 0 0 40px rgba(0,0,0,0.9);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.8rem;
+    /* MONITOR BEZEL */
+    #computer-monitor {
       position: relative;
+      width: min(740px, 95vw);
       z-index: 2;
     }
 
-    #monitor::after {
-      content:'';
-      position:absolute;
-      bottom:10px; right:16px;
-      width:6px; height:6px;
-      border-radius:50%;
-      background:#00f5ff;
-      box-shadow:0 0 8px #00f5ff;
-      animation: led 2s infinite;
+    #computer-monitor img {
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      filter: drop-shadow(0 0 8px #ff00c8) drop-shadow(0 0 20px #ff00c8);
+      display: block;
     }
-    @keyframes led { 0%,100%{opacity:1} 50%{opacity:0.3} }
 
     /* TERMINAL — fixed height so monitor never jumps */
     #terminal {
@@ -241,28 +223,8 @@
 <button id="mute-btn"></button>
 
 <div id="scene">
-  <div id="monitor">
-
-    <div id="terminal">
-      <span class="tline" id="l1"></span>
-      <span class="tline" id="l2"></span>
-      <span class="tline" id="l3"></span>
-      <span class="cursor" id="cur"></span>
-    </div>
-
-    <!-- LOGO + ARM wrapped together so they scale as one unit -->
-    <div id="logo-arm-wrap">
-      <div id="logo-area">
-        <img id="logo-anim"   src="eyebrowzr_wireframe_animation_no_eye.gif" alt="EYEBROWZR"/>
-        <img id="logo-static" src="eyebrowzr_wireframe_no_eye.png"           alt="EYEBROWZR"/>
-      </div>
-      <div id="arm-layer">
-        <img id="arm-gif"     src="eyebrowzr_arm.gif"           alt="arm"/>
-        <img id="idle-gif"    src="eyebrowzr_arm_idle_loop.gif" alt="idle"/>
-        <img id="retract-gif" src="eyebrowzr_arm_retract.gif"   alt="retract"/>
-      </div>
-    </div>
-
+  <div id="computer-monitor">
+    <img src="computer_monitor.png" alt="monitor"/>
   </div>
 
   <div id="keyboard">
@@ -376,24 +338,26 @@
       logoArmWrap.style.opacity = '1';
       showArm(armGif);
 
-      // After arm settles swap to idle + start laser trace
+      // Start laser trace 3 seconds after arm begins
       setTimeout(() => {
-        showArm(idleGif);
+        logoArmWrap.style.opacity = '1';
         restartGif(logoAnim);
         logoAnim.style.display = 'block';
         setTerminal('> RENDERING WORDMARK...');
 
-        // After laser trace swap to static logo
+        // After laser trace finishes swap to static
         setTimeout(() => {
           logoAnim.style.display = 'none';
           logoStatic.style.display = 'block';
           setTerminal('> SYSTEM ONLINE. ', '> WELCOME TO EYEBROWZR');
-
-          // Show deactivate — one press only
-          deactivateBtn.style.display = 'block';
-
         }, LASER_DURATION);
 
+      }, 3000);
+
+      // After arm finishes swap to idle, show deactivate
+      setTimeout(() => {
+        showArm(idleGif);
+        deactivateBtn.style.display = 'block';
       }, ARM_DURATION);
     });
   });
