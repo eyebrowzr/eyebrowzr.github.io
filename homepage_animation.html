@@ -63,12 +63,13 @@
       image-rendering: pixelated;
       filter: drop-shadow(0 0 8px #ff00c8) drop-shadow(0 0 20px #ff00c8);
       display: block;
+      position: relative;
+      z-index: 5; /* bezel sits on top of screen content */
     }
 
-    /* SCREEN CONTENT — positioned inside bezel hole */
+    /* SCREEN CONTENT — positioned inside bezel hole, behind bezel */
     #screen {
       position: absolute;
-      /* 35px offset scales proportionally with the bezel */
       top: calc(35 / 480 * 100%);
       left: calc(35 / 740 * 100%);
       width: calc(670 / 740 * 100%);
@@ -80,7 +81,7 @@
       padding: 4% 5%;
       gap: 0.5rem;
       overflow: hidden;
-      z-index: 3;
+      z-index: 3; /* behind bezel */
     }
 
     /* TERMINAL */
