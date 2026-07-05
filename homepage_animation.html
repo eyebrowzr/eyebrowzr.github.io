@@ -57,12 +57,42 @@
       z-index: 2;
     }
 
-    #computer-monitor img {
+    #computer-monitor img.bezel {
       width: 100%;
       height: auto;
       image-rendering: pixelated;
       filter: drop-shadow(0 0 8px #ff00c8) drop-shadow(0 0 20px #ff00c8);
       display: block;
+    }
+
+    /* SCREEN CONTENT — positioned inside bezel hole */
+    #screen {
+      position: absolute;
+      /* 35px offset scales proportionally with the bezel */
+      top: calc(35 / 480 * 100%);
+      left: calc(35 / 740 * 100%);
+      width: calc(670 / 740 * 100%);
+      height: calc(410 / 480 * 100%);
+      background: #06060f;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      padding: 4% 5%;
+      gap: 0.5rem;
+      overflow: hidden;
+      z-index: 3;
+    }
+
+    /* TERMINAL */
+    #terminal {
+      width: 100%;
+      font-family: 'Courier New', monospace;
+      font-size: clamp(0.45rem, 1.5vw, 0.7rem);
+      color: var(--green);
+      text-shadow: 0 0 6px var(--green);
+      line-height: 1.9;
+      height: 30%;
+      overflow: hidden;
     }
 
     /* TERMINAL — fixed height so monitor never jumps */
@@ -224,7 +254,26 @@
 
 <div id="scene">
   <div id="computer-monitor">
-    <img src="computer_monitor.png" alt="monitor"/>
+    <img class="bezel" src="computer_monitor.png" alt="monitor"/>
+    <div id="screen">
+      <div id="terminal">
+        <span class="tline" id="l1"></span>
+        <span class="tline" id="l2"></span>
+        <span class="tline" id="l3"></span>
+        <span class="cursor" id="cur"></span>
+      </div>
+      <div id="logo-arm-wrap">
+        <div id="logo-area">
+          <img id="logo-anim"   src="eyebrowzr_wireframe_animation_no_eye.gif" alt="EYEBROWZR"/>
+          <img id="logo-static" src="eyebrowzr_wireframe_no_eye.png"           alt="EYEBROWZR"/>
+        </div>
+        <div id="arm-layer">
+          <img id="arm-gif"     src="eyebrowzr_arm.gif"           alt="arm"/>
+          <img id="idle-gif"    src="eyebrowzr_arm_idle_loop.gif" alt="idle"/>
+          <img id="retract-gif" src="eyebrowzr_arm_retract.gif"   alt="retract"/>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div id="keyboard">
