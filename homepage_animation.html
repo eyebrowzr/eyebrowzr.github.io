@@ -15,7 +15,6 @@
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      overflow-x: hidden;
     }
 
     body::after {
@@ -30,7 +29,6 @@
       z-index: 999;
     }
 
-    /* SCENE */
     #scene {
       display: flex;
       flex-direction: column;
@@ -38,37 +36,15 @@
       width: min(740px, 95vw);
     }
 
-    /* MONITOR CONTAINER */
-    #monitor-wrap {
-      position: relative;
-      width: 100%;
-    }
-      width: 100%;
-      height: auto;
-      image-rendering: pixelated;
-      display: block;
-      position: relative;
-      z-index: 5;
-      filter: drop-shadow(0 0 8px #ff00c8) drop-shadow(0 0 20px #ff00c8);
-    }
-
-    /* SCREEN — 16:10 ratio matching GIF dimensions 800x500 */
+    /* All GIFs stacked, only one visible at a time */
     #screen {
-      position: absolute;
-      top: 13.33%;
-      left: 10.27%;
-      width: 80%;
-      aspect-ratio: 8 / 5;
-      overflow: hidden;
-      z-index: 3;
+      position: relative;
+      width: 100%;
     }
 
     #screen img {
-      position: absolute;
-      top: 0; left: 0;
       width: 100%;
-      height: 100%;
-      object-fit: fill;
+      height: auto;
       image-rendering: pixelated;
       display: none;
     }
@@ -77,18 +53,14 @@
       display: block;
     }
 
-    /* KEYBOARD PANEL */
+    /* BUTTONS */
     #keyboard {
       width: 100%;
-      background: transparent;
-      border: none;
       height: 70px;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 1rem;
-      position: relative;
-      z-index: 2;
     }
 
     .splash-btn {
@@ -115,21 +87,20 @@
       50%{ box-shadow: 0 0 22px rgba(0,255,65,0.5); }
     }
 
-    #deactivate-btn {
+    #deact-btn {
       color: #ff00c8;
       border-color: #ff00c8;
       text-shadow: 0 0 8px #ff00c8;
       display: none;
-      animation: deactivatepulse 2s infinite;
+      animation: deactpulse 2s infinite;
     }
-    #deactivate-btn:hover { background: rgba(255,0,200,0.08); }
-    #deactivate-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
-    @keyframes deactivatepulse {
+    #deact-btn:hover { background: rgba(255,0,200,0.08); }
+    #deact-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
+    @keyframes deactpulse {
       0%,100%{ box-shadow: 0 0 10px rgba(255,0,200,0.2); }
       50%{ box-shadow: 0 0 22px rgba(255,0,200,0.5); }
     }
 
-    /* MUTE */
     #mute-btn {
       position: fixed;
       top: 1rem; right: 1rem;
@@ -141,9 +112,7 @@
       cursor: pointer;
       border-radius: 4px;
       z-index: 500;
-      transition: all 0.2s;
     }
-    #mute-btn:hover { color: #00f5ff; border-color: #00f5ff; }
   </style>
 </head>
 <body>
@@ -151,21 +120,16 @@
 <button id="mute-btn"></button>
 
 <div id="scene">
-
-  <div id="monitor-wrap">
-    <div id="screen">
-      <img id="gif-idle"    src="computer_monitor_idle_animation.gif"     alt="idle"/>
-      <img id="gif-intro"   src="homepage_wiretrace_and_arm_sequence.gif" alt="intro"/>
-      <img id="gif-active"  src="homepage_active_idle.gif"                alt="active"/>
-      <img id="gif-retract" src="homepage_retract_sequence.gif"           alt="retract"/>
-    </div>
+  <div id="screen">
+    <img id="gif-idle"    class="active" src="computer_monitor_idle_animation.gif"     alt="idle"/>
+    <img id="gif-intro"   src="homepage_wiretrace_and_arm_sequence.gif" alt="intro"/>
+    <img id="gif-active"  src="homepage_active_idle.gif"                alt="active"/>
+    <img id="gif-retract" src="homepage_retract_sequence.gif"           alt="retract"/>
   </div>
-
   <div id="keyboard">
     <button class="splash-btn" id="init-btn">[ INITIALIZE ]</button>
-    <button class="splash-btn" id="deactivate-btn">[ DEACTIVATE ]</button>
+    <button class="splash-btn" id="deact-btn">[ DEACTIVATE ]</button>
   </div>
-
 </div>
 
 <script>
@@ -177,13 +141,13 @@
   const gifActive  = document.getElementById('gif-active');
   const gifRetract = document.getElementById('gif-retract');
   const initBtn    = document.getElementById('init-btn');
-  const deactBtn   = document.getElementById('deactivate-btn');
+  const deactBtn   = document.getElementById('deact-btn');
 
-  // Show idle on load
-  gifIdle.classList.add('active');
-
-  // Show idle on load
-  gifIdle.classList.add('active');
+  let muted = false;
+  document.getElementById('mute-btn').onclick = () => {
+    muted = !muted;
+    document.getElementById('mute-btn').textContent = muted ? '' : '';
+  };
 
   function restartGif(el) {
     const src = el.src;
@@ -192,26 +156,15 @@
   }
 
   function showOnly(el) {
-    [gifIdle, gifIntro, gifActive, gifRetract].forEach(g => {
-      g.classList.remove('active');
-    });
+    [gifIdle, gifIntro, gifActive, gifRetract].forEach(g => g.classList.remove('active'));
     el.classList.add('active');
   }
 
-  //  MUTE 
-  let muted = false;
-  document.getElementById('mute-btn').onclick = () => {
-    muted = !muted;
-    document.getElementById('mute-btn').textContent = muted ? '' : '';
-  };
-
-  //  INITIALIZE 
   initBtn.addEventListener('click', () => {
     initBtn.disabled = true;
     initBtn.style.display = 'none';
     restartGif(gifIntro);
     showOnly(gifIntro);
-
     setTimeout(() => {
       restartGif(gifActive);
       showOnly(gifActive);
@@ -219,13 +172,11 @@
     }, INTRO_DURATION);
   });
 
-  //  DEACTIVATE 
   deactBtn.addEventListener('click', () => {
     deactBtn.disabled = true;
     deactBtn.style.display = 'none';
     restartGif(gifRetract);
     showOnly(gifRetract);
-
     setTimeout(() => {
       restartGif(gifIdle);
       showOnly(gifIdle);
