@@ -1,429 +1,463 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>EYEBROWZR</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    :root {
-      --neon-cyan: #00f5ff;
-      --neon-pink: #ff00c8;
-      --neon-yellow: #ffe600;
-      --bg: #070714;
-      --card-bg: #0e0e2a;
-      --text: #e0e0ff;
-    }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
-      width: 100%;
-      max-width: 100vw;
-    }
-
-    body::after {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
-      );
-      pointer-events: none;
-      z-index: 9999;
-    }
-
-    /* NAV */
-    nav {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      align-items: baseline;
-      gap: 0.8rem;
-      padding: 1rem 1.5rem;
-      border-bottom: 1px solid rgba(0,245,255,0.15);
-      position: sticky;
-      top: 0;
-      background: rgba(7,7,20,0.92);
-      backdrop-filter: blur(8px);
-      z-index: 100;
-      width: 100%;
-    }
-
-    .nav-logo {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.75rem;
-      color: var(--neon-cyan);
-      text-shadow: 0 0 10px var(--neon-cyan);
-      text-decoration: none;
-      letter-spacing: 2px;
-    }
-
-    .nav-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1.2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-size: 0.78rem;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      opacity: 0.75;
-      transition: opacity 0.2s, color 0.2s;
-    }
-    .nav-links a:hover { opacity: 1; color: var(--neon-cyan); }
-
-    /* HERO */
-    .hero {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 7rem 2rem 5rem;
-      position: relative;
-    }
-
-    .hero-grid {
-      position: absolute;
-      inset: 0;
-      background-image:
-        linear-gradient(rgba(0,245,255,0.05) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0,245,255,0.05) 1px, transparent 1px);
-      background-size: 40px 40px;
-      mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 40%, transparent 100%);
-    }
-
-    .hero-eyebrow {
-      font-family: 'Press Start 2P', monospace;
-      font-size: clamp(2.2rem, 8vw, 5rem);
-      color: #fff;
-      text-shadow:
-        0 0 20px var(--neon-cyan),
-        0 0 60px rgba(0,245,255,0.4);
-      letter-spacing: 4px;
-      line-height: 1.2;
-      position: relative;
-      animation: flicker 6s infinite;
-    }
-
-    @keyframes flicker {
-      0%,95%,100% { opacity: 1; }
-      96% { opacity: 0.85; }
-      97% { opacity: 1; }
-      98% { opacity: 0.7; }
-      99% { opacity: 1; }
-    }
-
-    .hero-tagline {
-      margin-top: 1.5rem;
-      font-size: 0.85rem;
-      color: var(--neon-pink);
-      font-family: 'Press Start 2P', monospace;
-      letter-spacing: 2px;
-      text-shadow: 0 0 10px var(--neon-pink);
-      position: relative;
-    }
-
-    .hero-btns {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2.5rem;
-      flex-wrap: wrap;
-      justify-content: center;
-      position: relative;
-    }
-
-    .btn {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.6rem;
-      padding: 0.9rem 1.6rem;
-      border: 2px solid;
-      text-decoration: none;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: transform 0.15s, box-shadow 0.15s;
-      display: inline-block;
-    }
-    .btn:hover { transform: translateY(-3px); }
-
-    .btn-primary {
-      background: var(--neon-cyan);
-      border-color: var(--neon-cyan);
-      color: var(--bg);
-      box-shadow: 0 0 20px rgba(0,245,255,0.5);
-    }
-    .btn-primary:hover { box-shadow: 0 0 35px rgba(0,245,255,0.8); }
-
-    .btn-secondary {
-      background: transparent;
-      border-color: var(--neon-pink);
-      color: var(--neon-pink);
-      box-shadow: 0 0 15px rgba(255,0,200,0.3);
-    }
-    .btn-secondary:hover { box-shadow: 0 0 30px rgba(255,0,200,0.6); }
-
-    /* PIXEL DIVIDER */
-    .pixel-divider {
-      display: flex;
-      justify-content: center;
-      gap: 6px;
-      padding: 1rem 0;
-    }
-    .pixel-divider span {
-      width: 8px; height: 8px;
-      background: var(--neon-cyan);
-      opacity: 0.4;
-      animation: pulse-dot 2s infinite;
-    }
-    .pixel-divider span:nth-child(2) { animation-delay: 0.2s; background: var(--neon-pink); }
-    .pixel-divider span:nth-child(3) { animation-delay: 0.4s; }
-    .pixel-divider span:nth-child(4) { animation-delay: 0.6s; background: var(--neon-pink); }
-    .pixel-divider span:nth-child(5) { animation-delay: 0.8s; }
-
-    @keyframes pulse-dot {
-      0%,100% { opacity: 0.4; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.4); }
-    }
-
-    /* NEWS BANNER */
-    .news-wrap {
-      max-width: 900px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-    }
-
-    .news-carousel {
-      position: relative;
-      background: var(--card-bg);
-      border: 1px solid rgba(0,245,255,0.15);
-      overflow: hidden;
-    }
-
-    .news-track {
-      display: flex;
-      transition: transform 0.5s ease;
-    }
-
-    .news-slide {
-      min-width: 100%;
-      padding: 1.5rem 2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .news-icon { font-size: 1.2rem; flex-shrink: 0; }
-
-    .news-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.55rem;
-      color: var(--neon-cyan);
-      letter-spacing: 2px;
-      margin-bottom: 0.4rem;
-    }
-
-    .news-desc {
-      font-size: 0.8rem;
-      color: rgba(224,224,255,0.6);
-    }
-
-    .news-dots {
-      display: flex;
-      justify-content: center;
-      gap: 0.5rem;
-      padding: 0.8rem 0;
-    }
-
-    .news-dot {
-      width: 8px; height: 8px;
-      background: rgba(0,245,255,0.2);
-      border: 1px solid rgba(0,245,255,0.3);
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .news-dot.active { background: var(--neon-cyan); }
-
-    /* ABOUT */
-    .about-strip {
-      border-top: 1px solid rgba(0,245,255,0.1);
-      border-bottom: 1px solid rgba(0,245,255,0.1);
-      padding: 3.5rem 2rem;
-    }
-
-    .about-inner {
-      max-width: 700px;
-      margin: 0 auto;
-      overflow: hidden;
-    }
-
-    .about-strip p {
-      font-size: 0.95rem;
-      color: rgba(224,224,255,0.6);
-      line-height: 1.8;
-      margin-top: 1rem;
-    }
-
-    .section-label {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.6rem;
-      color: var(--neon-cyan);
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      margin-bottom: 0.6rem;
-      opacity: 0.7;
-    }
-
-    .section-title {
-      font-family: 'Press Start 2P', monospace;
-      font-size: clamp(1rem, 3vw, 1.4rem);
-      color: #fff;
-      margin-bottom: 2.5rem;
-      text-shadow: 0 0 15px rgba(0,245,255,0.3);
-    }
-
-    /* FOOTER */
-    footer {
-      text-align: center;
-      padding: 2.5rem 1rem;
-      border-top: 1px solid rgba(0,245,255,0.1);
-      font-family: 'Press Start 2P', monospace;
-      font-size: 0.5rem;
-      color: rgba(224,224,255,0.3);
-      letter-spacing: 2px;
-    }
-    footer span { color: var(--neon-pink); }
-  </style>
-</head>
-<body>
-
-  <!-- NAV -->
-  <nav>
-    <a class="nav-logo" href="index.html">EYEBROWZR</a>
-    <ul class="nav-links">
-      <li><a href="music.html">MUSIC</a></li>
-      <li><a href="games.html">GAMES</a></li>
-      <li><a href="log.html">THE LOG</a></li>
-      <li><a href="#about">ABOUT</a></li>
-    </ul>
-  </nav>
-
-  <!-- HERO -->
-  <div class="hero">
-    <div class="hero-grid"></div>
-    <img src="logo.png" alt="EYEBROWZR" style="image-rendering:pixelated;max-width:95%;width:620px;filter:drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 25px #00f5ff);margin-bottom:0.5rem;">
-    <div class="hero-tagline">// MUSIC · GAMES · CHAOS //</div>
-    <div class="hero-btns">
-      <a href="music.html" class="btn btn-primary">▶ LISTEN NOW</a>
-      <a href="games.html" class="btn btn-secondary">▣ PLAY GAMES</a>
-    </div>
-  </div>
-
-  <div class="pixel-divider">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-
-  <!-- NEWS BANNER -->
-  <div class="news-wrap">
-    <div class="section-label">// LATEST //</div>
-    <div class="news-carousel">
-      <div class="news-track" id="newsTrack">
-
-        <a href="music.html#releases" class="news-slide" style="text-decoration:none;color:inherit;">
-          <div class="news-icon">🎵</div>
-          <div>
-            <div class="news-title">GLACIER EYES — OUT NOW</div>
-            <div class="news-desc">Available now on SoundCloud</div>
-          </div>
-        </a>
-
-        <a href="music.html#live" class="news-slide" style="text-decoration:none;color:inherit;">
-          <div class="news-icon">🎬</div>
-          <div>
-            <div class="news-title">BIRD ZONE — WATCH NOW</div>
-            <div class="news-desc">Live from Joshua Tree National Park on YouTube</div>
-          </div>
-        </a>
-
-        <a href="games.html" class="news-slide" style="text-decoration:none;color:inherit;">
-          <div class="news-icon">🎮</div>
-          <div>
-            <div class="news-title">ZOMBIE TRAIN — COMING SOON</div>
-            <div class="news-desc">Survival horror card game — Halloween 2026 on Android</div>
-          </div>
-        </a>
-
-        <a href="log.html" class="news-slide" style="text-decoration:none;color:inherit;">
-          <div class="news-icon">📖</div>
-          <div>
-            <div class="news-title">THE LOG — ENTRY 001</div>
-            <div class="news-desc">The birth of EYEBROWZR — read the first entry now</div>
-          </div>
-        </a>
-
-      </div>
-      <div class="news-dots" id="newsDots"></div>
-    </div>
-  </div>
-
-  <div class="pixel-divider">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-
-  <!-- ABOUT -->
-  <div class="about-strip" id="about">
-    <div class="about-inner">
-      <div class="section-title" style="text-align:center;margin-bottom:1.5rem;">ABOUT EYEBROWZR</div>
-      <img src="eyebrowzr_blinking.gif" alt="Eyebrowzr" style="float:right;width:140px;height:auto;image-rendering:pixelated;filter:drop-shadow(0 0 12px #ff00c8);margin:0 0 1rem 1.5rem;">
-      <p>EYEBROWZR is the creative vision of a 16-bit Daft Punk disciple.</p>
-      <p>A mix of chiptunes and dance music from the 90s and early 00s, filtered through a modern lens. Music, games, animation, and art — the adventure is just getting started.</p>
-    </div>
-  </div>
-
-  <!-- FOOTER -->
-  <footer>
-    © 2026 EYEBROWZR &nbsp;
-  </footer>
-
-  <script>
-    const track = document.getElementById('newsTrack');
-    const dotsEl = document.getElementById('newsDots');
-    const slides = track.children;
-    const total = slides.length;
-    let current = 0;
-    let timer;
-
-    // Build dots
-    for (let i = 0; i < total; i++) {
-      const d = document.createElement('div');
-      d.className = 'news-dot' + (i === 0 ? ' active' : '');
-      d.addEventListener('click', () => goTo(i));
-      dotsEl.appendChild(d);
-    }
-
-    function goTo(n) {
-      current = (n + total) % total;
-      track.style.transform = `translateX(-${current * 100}%)`;
-      document.querySelectorAll('.news-dot').forEach((d, i) => {
-        d.classList.toggle('active', i === current);
-      });
-      clearInterval(timer);
-      timer = setInterval(() => goTo(current + 1), 6000);
-    }
-
-    timer = setInterval(() => goTo(current + 1), 6000);
-  </script>
-
-</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>EYEBROWZR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --neon-cyan: #00f5ff;
+      --neon-pink: #ff00c8;
+      --neon-yellow: #ffe600;
+      --bg: #070714;
+      --card-bg: #0e0e2a;
+      --text: #e0e0ff;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      width: 100%;
+      max-width: 100vw;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        0deg, transparent, transparent 2px,
+        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+      );
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    /* NAV */
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.8rem;
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid rgba(0,245,255,0.15);
+      position: sticky;
+      top: 0;
+      background: rgba(7,7,20,0.92);
+      backdrop-filter: blur(8px);
+      z-index: 100;
+      width: 100%;
+    }
+
+    .nav-logo {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-cyan);
+      text-shadow: 0 0 10px var(--neon-cyan);
+      text-decoration: none;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.78rem;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      opacity: 0.75;
+      transition: opacity 0.2s, color 0.2s;
+    }
+    .nav-links a:hover { opacity: 1; color: var(--neon-cyan); }
+
+    /* HOMEPAGE ANIMATION SCENE */
+    #scene {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 740px;
+      margin: 0 auto;
+    }
+
+    #screen {
+      position: relative;
+      width: 100%;
+    }
+
+    #screen img {
+      width: 100%;
+      height: auto;
+      image-rendering: pixelated;
+      display: none;
+    }
+
+    #screen img.active {
+      display: block;
+    }
+
+    #keyboard {
+      width: 100%;
+      height: 70px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .splash-btn {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(0.5rem, 1.5vw, 0.65rem);
+      letter-spacing: 2px;
+      background: transparent;
+      padding: 0.7rem 1.5rem;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.2s;
+    }
+
+    #init-btn {
+      color: #00ff41;
+      border-color: #00ff41;
+      text-shadow: 0 0 8px #00ff41;
+      animation: btnpulse 2s infinite;
+    }
+    #init-btn:hover { background: rgba(0,255,65,0.08); }
+    #init-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
+    @keyframes btnpulse {
+      0%,100%{ box-shadow: 0 0 10px rgba(0,255,65,0.2); }
+      50%{ box-shadow: 0 0 22px rgba(0,255,65,0.5); }
+    }
+
+    #deact-btn {
+      color: #ff00c8;
+      border-color: #ff00c8;
+      text-shadow: 0 0 8px #ff00c8;
+      display: none;
+      animation: deactpulse 2s infinite;
+    }
+    #deact-btn:hover { background: rgba(255,0,200,0.08); }
+    #deact-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
+    @keyframes deactpulse {
+      0%,100%{ box-shadow: 0 0 10px rgba(255,0,200,0.2); }
+      50%{ box-shadow: 0 0 22px rgba(255,0,200,0.5); }
+    }
+
+    /* PIXEL DIVIDER */
+    .pixel-divider {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 1rem 0;
+    }
+    .pixel-divider span {
+      width: 8px; height: 8px;
+      background: var(--neon-cyan);
+      opacity: 0.4;
+      animation: pulse-dot 2s infinite;
+    }
+    .pixel-divider span:nth-child(2) { animation-delay: 0.2s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(3) { animation-delay: 0.4s; }
+    .pixel-divider span:nth-child(4) { animation-delay: 0.6s; background: var(--neon-pink); }
+    .pixel-divider span:nth-child(5) { animation-delay: 0.8s; }
+
+    @keyframes pulse-dot {
+      0%,100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.4); }
+    }
+
+    /* NEWS BANNER */
+    .news-wrap {
+      max-width: 900px;
+      margin: 2rem auto;
+      padding: 0 1.5rem;
+    }
+
+    .news-carousel {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid rgba(0,245,255,0.15);
+      overflow: hidden;
+    }
+
+    .news-track {
+      display: flex;
+      transition: transform 0.5s ease;
+    }
+
+    .news-slide {
+      min-width: 100%;
+      padding: 1.5rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .news-icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    .news-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      color: var(--neon-cyan);
+      letter-spacing: 2px;
+      margin-bottom: 0.4rem;
+    }
+
+    .news-desc {
+      font-size: 0.8rem;
+      color: rgba(224,224,255,0.6);
+    }
+
+    .news-dots {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.8rem 0;
+    }
+
+    .news-dot {
+      width: 8px; height: 8px;
+      background: rgba(0,245,255,0.2);
+      border: 1px solid rgba(0,245,255,0.3);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .news-dot.active { background: var(--neon-cyan); }
+
+    /* ABOUT */
+    .about-strip {
+      border-top: 1px solid rgba(0,245,255,0.1);
+      border-bottom: 1px solid rgba(0,245,255,0.1);
+      padding: 3.5rem 2rem;
+    }
+
+    .about-inner {
+      max-width: 700px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+
+    .about-strip p {
+      font-size: 0.95rem;
+      color: rgba(224,224,255,0.6);
+      line-height: 1.8;
+      margin-top: 1rem;
+    }
+
+    .section-label {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.6rem;
+      color: var(--neon-cyan);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 0.6rem;
+      opacity: 0.7;
+    }
+
+    .section-title {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      color: #fff;
+      margin-bottom: 2.5rem;
+      text-shadow: 0 0 15px rgba(0,245,255,0.3);
+    }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      border-top: 1px solid rgba(0,245,255,0.1);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      color: rgba(224,224,255,0.3);
+      letter-spacing: 2px;
+    }
+    footer span { color: var(--neon-pink); }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="index.html">EYEBROWZR</a>
+    <ul class="nav-links">
+      <li><a href="music.html">MUSIC</a></li>
+      <li><a href="games.html">GAMES</a></li>
+      <li><a href="log.html">THE LOG</a></li>
+      <li><a href="#about">ABOUT</a></li>
+    </ul>
+  </nav>
+
+  <!-- HOMEPAGE ANIMATION -->
+  <div id="scene">
+    <div id="screen">
+      <img id="gif-idle"    class="active" src="computer_monitor_idle_animation.gif"     alt="idle"/>
+      <img id="gif-intro"   src="homepage_wiretrace_and_arm_sequence.gif" alt="intro"/>
+      <img id="gif-active"  src="homepage_active_idle.gif"                alt="active"/>
+      <img id="gif-retract" src="homepage_retract_sequence.gif"           alt="retract"/>
+    </div>
+    <div id="keyboard">
+      <button class="splash-btn" id="init-btn">[ INITIALIZE ]</button>
+      <button class="splash-btn" id="deact-btn">[ DEACTIVATE ]</button>
+    </div>
+  </div>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- NEWS BANNER -->
+  <div class="news-wrap">
+    <div class="section-label">// LATEST //</div>
+    <div class="news-carousel">
+      <div class="news-track" id="newsTrack">
+
+        <a href="music.html#releases" class="news-slide" style="text-decoration:none;color:inherit;">
+          <div class="news-icon">🎵</div>
+          <div>
+            <div class="news-title">GLACIER EYES — OUT NOW</div>
+            <div class="news-desc">Available now on SoundCloud</div>
+          </div>
+        </a>
+
+        <a href="music.html#live" class="news-slide" style="text-decoration:none;color:inherit;">
+          <div class="news-icon">🎬</div>
+          <div>
+            <div class="news-title">BIRD ZONE — WATCH NOW</div>
+            <div class="news-desc">Live from Joshua Tree National Park on YouTube</div>
+          </div>
+        </a>
+
+        <a href="games.html" class="news-slide" style="text-decoration:none;color:inherit;">
+          <div class="news-icon">🎮</div>
+          <div>
+            <div class="news-title">ZOMBIE TRAIN — COMING SOON</div>
+            <div class="news-desc">Survival horror card game — Halloween 2026 on Android</div>
+          </div>
+        </a>
+
+        <a href="log.html" class="news-slide" style="text-decoration:none;color:inherit;">
+          <div class="news-icon">📖</div>
+          <div>
+            <div class="news-title">THE LOG — ENTRY 001</div>
+            <div class="news-desc">The birth of EYEBROWZR — read the first entry now</div>
+          </div>
+        </a>
+
+      </div>
+      <div class="news-dots" id="newsDots"></div>
+    </div>
+  </div>
+
+  <div class="pixel-divider">
+    <span></span><span></span><span></span><span></span><span></span>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="about-strip" id="about">
+    <div class="about-inner">
+      <div class="section-title" style="text-align:center;margin-bottom:1.5rem;">ABOUT EYEBROWZR</div>
+      <img src="eyebrowzr_blinking.gif" alt="Eyebrowzr" style="float:right;width:140px;height:auto;image-rendering:pixelated;filter:drop-shadow(0 0 12px #ff00c8);margin:0 0 1rem 1.5rem;">
+      <p>EYEBROWZR is the creative vision of a 16-bit Daft Punk disciple.</p>
+      <p>A mix of chiptunes and dance music from the 90s and early 00s, filtered through a modern lens. Music, games, animation, and art — the adventure is just getting started.</p>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 EYEBROWZR &nbsp;
+  </footer>
+
+  <script>
+    // HOMEPAGE ANIMATION
+    const INTRO_DURATION   = 8000;
+    const RETRACT_DURATION = 5000;
+
+    const gifIdle    = document.getElementById('gif-idle');
+    const gifIntro   = document.getElementById('gif-intro');
+    const gifActive  = document.getElementById('gif-active');
+    const gifRetract = document.getElementById('gif-retract');
+    const initBtn    = document.getElementById('init-btn');
+    const deactBtn   = document.getElementById('deact-btn');
+
+    function restartGif(el) {
+      const src = el.src;
+      el.src = '';
+      el.src = src;
+    }
+
+    function showOnly(el) {
+      [gifIdle, gifIntro, gifActive, gifRetract].forEach(g => g.classList.remove('active'));
+      el.classList.add('active');
+    }
+
+    initBtn.addEventListener('click', () => {
+      initBtn.disabled = true;
+      initBtn.style.display = 'none';
+      restartGif(gifIntro);
+      showOnly(gifIntro);
+      setTimeout(() => {
+        restartGif(gifActive);
+        showOnly(gifActive);
+        deactBtn.style.display = 'block';
+      }, INTRO_DURATION);
+    });
+
+    deactBtn.addEventListener('click', () => {
+      deactBtn.disabled = true;
+      deactBtn.style.display = 'none';
+      restartGif(gifRetract);
+      showOnly(gifRetract);
+      setTimeout(() => {
+        restartGif(gifIdle);
+        showOnly(gifIdle);
+        initBtn.style.display = 'block';
+        initBtn.disabled = false;
+      }, RETRACT_DURATION);
+    });
+
+    // NEWS CAROUSEL
+    const track = document.getElementById('newsTrack');
+    const dotsEl = document.getElementById('newsDots');
+    const slides = track.children;
+    const total = slides.length;
+    let current = 0;
+    let timer;
+
+    // Build dots
+    for (let i = 0; i < total; i++) {
+      const d = document.createElement('div');
+      d.className = 'news-dot' + (i === 0 ? ' active' : '');
+      d.addEventListener('click', () => goTo(i));
+      dotsEl.appendChild(d);
+    }
+
+    function goTo(n) {
+      current = (n + total) % total;
+      track.style.transform = `translateX(-${current * 100}%)`;
+      document.querySelectorAll('.news-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === current);
+      });
+      clearInterval(timer);
+      timer = setInterval(() => goTo(current + 1), 6000);
+    }
+
+    timer = setInterval(() => goTo(current + 1), 6000);
+  </script>
+
+</body>
 </html>
