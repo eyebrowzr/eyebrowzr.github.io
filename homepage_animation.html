@@ -4,29 +4,18 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>EYEBROWZR</title>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@300;400;600&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet"/>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --neon-cyan: #00f5ff;
-      --neon-pink: #ff00c8;
-      --bg: #070714;
-      --card-bg: #0e0e2a;
-      --text: #e0e0ff;
-      --green: #00ff41;
-    }
-
     body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      min-height: 100vh;
-      overflow-x: hidden;
+      background: #070714;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
 
     body::after {
@@ -35,135 +24,59 @@
       inset: 0;
       background: repeating-linear-gradient(
         0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.08) 2px, rgba(0,0,0,0.08) 4px
+        rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px
       );
       pointer-events: none;
-      z-index: 5;
+      z-index: 999;
     }
 
     /* SCENE */
     #scene {
-      position: relative;
-      width: min(560px, 95vw);
       display: flex;
       flex-direction: column;
       align-items: center;
-    }
-
-    /* MONITOR BEZEL */
-    #computer-monitor {
-      position: relative;
       width: min(740px, 95vw);
-      z-index: 2;
     }
 
-    #computer-monitor img.bezel {
+    /* MONITOR CONTAINER */
+    #monitor-wrap {
+      position: relative;
+      width: 100%;
+    }
+
+    /* BEZEL */
+    #bezel {
       width: 100%;
       height: auto;
       image-rendering: pixelated;
-      filter: drop-shadow(0 0 8px #ff00c8) drop-shadow(0 0 20px #ff00c8);
       display: block;
       position: relative;
-      z-index: 5; /* bezel sits on top of screen content */
+      z-index: 5;
+      filter: drop-shadow(0 0 8px #ff00c8) drop-shadow(0 0 20px #ff00c8);
     }
 
-    /* SCREEN CONTENT — positioned inside bezel hole, behind bezel */
+    /* SCREEN — all GIFs stacked here, behind bezel */
     #screen {
       position: absolute;
-      top: calc(35 / 480 * 100%);
-      left: calc(35 / 740 * 100%);
-      width: calc(670 / 740 * 100%);
-      height: calc(410 / 480 * 100%);
-      background: #06060f;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-start;
-      padding: 4% 5%;
-      gap: 0.5rem;
+      top: 13.33%;
+      left: 10.27%;
+      width: 80%;
+      height: 71.67%;
       overflow: hidden;
-      z-index: 3; /* behind bezel */
+      z-index: 3;
     }
 
-    /* TERMINAL */
-    #terminal {
-      width: 100%;
-      font-family: 'Courier New', monospace;
-      font-size: clamp(0.45rem, 1.5vw, 0.7rem);
-      color: var(--green);
-      text-shadow: 0 0 6px var(--green);
-      line-height: 1.9;
-      height: 30%;
-      overflow: hidden;
-    }
-
-    /* TERMINAL — fixed height so monitor never jumps */
-    #terminal {
-      width: 100%;
-      font-family: 'Courier New', monospace;
-      font-size: clamp(0.55rem, 1.8vw, 0.7rem);
-      color: var(--green);
-      text-shadow: 0 0 6px var(--green);
-      line-height: 1.9;
-      height: 80px;
-      overflow: hidden;
-    }
-
-    .tline { display: block; }
-    .cursor {
-      display: inline-block;
-      width: 7px; height: 0.9em;
-      background: var(--green);
-      vertical-align: text-bottom;
-      margin-left: 2px;
-      animation: blink 0.7s infinite;
-    }
-    @keyframes blink { 0%,49%{opacity:1} 50%,100%{opacity:0} }
-
-    /* LOGO + ARM CONTAINER — both scale together */
-    #logo-arm-wrap {
-      position: relative;
-      width: 100%;
-      max-width: 480px;
-      opacity: 0;
-      transition: opacity 0.5s;
-    }
-
-    /* LOGO fills container */
-    #logo-area {
-      width: 100%;
-      display: block;
-      position: relative;
-    }
-
-    #logo-area img {
-      width: 100%;
-      height: auto;
-      image-rendering: pixelated;
-      filter: drop-shadow(0 0 8px #00f5ff) drop-shadow(0 0 20px #00f5ff);
-      display: none;
-    }
-
-    /* ARM positioned as % of container, scales with logo */
-    #arm-layer {
+    #screen img {
       position: absolute;
-      /* O gap at ~67% from left */
-      left: 67%;
-      transform: translateX(-50%);
-      /* top offset — arm hangs above logo */
-      bottom: 30%;
-      width: 30%; /* arm is ~30% width of logo */
-      z-index: 10;
-      pointer-events: none;
-    }
-
-    #arm-layer img {
+      top: 0; left: 0;
       width: 100%;
-      height: auto;
+      height: 100%;
+      object-fit: fill;
       image-rendering: pixelated;
       display: none;
     }
 
-    #arm-layer img.visible {
+    #screen img.active {
       display: block;
     }
 
@@ -174,15 +87,14 @@
       border: 2px solid #1a1a3a;
       border-top: none;
       border-radius: 0 0 10px 10px;
-      padding: 1rem;
       height: 70px;
       display: flex;
       justify-content: center;
       align-items: center;
       gap: 1rem;
-      box-shadow: 0 6px 30px rgba(0,0,0,0.5);
       position: relative;
       z-index: 2;
+      box-shadow: 0 6px 30px rgba(0,0,0,0.5);
     }
 
     .splash-btn {
@@ -192,36 +104,36 @@
       background: transparent;
       padding: 0.7rem 1.5rem;
       cursor: pointer;
-      transition: all 0.2s;
       border: 1px solid;
+      transition: all 0.2s;
     }
 
     #init-btn {
-      color: var(--green);
-      border-color: var(--green);
-      text-shadow: 0 0 8px var(--green);
+      color: #00ff41;
+      border-color: #00ff41;
+      text-shadow: 0 0 8px #00ff41;
       animation: btnpulse 2s infinite;
-    }
-    @keyframes btnpulse {
-      0%,100%{box-shadow:0 0 10px rgba(0,255,65,0.2)}
-      50%{box-shadow:0 0 22px rgba(0,255,65,0.5)}
     }
     #init-btn:hover { background: rgba(0,255,65,0.08); }
     #init-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
+    @keyframes btnpulse {
+      0%,100%{ box-shadow: 0 0 10px rgba(0,255,65,0.2); }
+      50%{ box-shadow: 0 0 22px rgba(0,255,65,0.5); }
+    }
 
     #deactivate-btn {
-      color: var(--neon-pink);
-      border-color: var(--neon-pink);
-      text-shadow: 0 0 8px var(--neon-pink);
+      color: #ff00c8;
+      border-color: #ff00c8;
+      text-shadow: 0 0 8px #ff00c8;
       display: none;
       animation: deactivatepulse 2s infinite;
     }
-    @keyframes deactivatepulse {
-      0%,100%{box-shadow:0 0 10px rgba(255,0,200,0.2)}
-      50%{box-shadow:0 0 22px rgba(255,0,200,0.5)}
-    }
     #deactivate-btn:hover { background: rgba(255,0,200,0.08); }
     #deactivate-btn:disabled { opacity: 0.3; cursor: not-allowed; animation: none; }
+    @keyframes deactivatepulse {
+      0%,100%{ box-shadow: 0 0 10px rgba(255,0,200,0.2); }
+      50%{ box-shadow: 0 0 22px rgba(255,0,200,0.5); }
+    }
 
     /* MUTE */
     #mute-btn {
@@ -238,15 +150,6 @@
       transition: all 0.2s;
     }
     #mute-btn:hover { color: #00f5ff; border-color: #00f5ff; }
-
-    @keyframes glitch {
-      0%{transform:translate(0);filter:none}
-      25%{transform:translate(-2px,1px);filter:hue-rotate(90deg)}
-      50%{transform:translate(2px,-1px);filter:hue-rotate(200deg)}
-      75%{transform:translate(-1px,2px);filter:hue-rotate(300deg)}
-      100%{transform:translate(0);filter:none}
-    }
-    .glitching { animation: glitch 0.08s infinite; }
   </style>
 </head>
 <body>
@@ -254,26 +157,14 @@
 <button id="mute-btn"></button>
 
 <div id="scene">
-  <div id="computer-monitor">
-    <img class="bezel" src="computer_monitor.png" alt="monitor"/>
+
+  <div id="monitor-wrap">
+    <img id="bezel" src="computer_monitor.png" alt="monitor"/>
     <div id="screen">
-      <div id="terminal">
-        <span class="tline" id="l1"></span>
-        <span class="tline" id="l2"></span>
-        <span class="tline" id="l3"></span>
-        <span class="cursor" id="cur"></span>
-      </div>
-      <div id="logo-arm-wrap">
-        <div id="logo-area">
-          <img id="logo-anim"   src="eyebrowzr_wireframe_animation_no_eye.gif" alt="EYEBROWZR"/>
-          <img id="logo-static" src="eyebrowzr_wireframe_no_eye.png"           alt="EYEBROWZR"/>
-        </div>
-        <div id="arm-layer">
-          <img id="arm-gif"     src="eyebrowzr_arm.gif"           alt="arm"/>
-          <img id="idle-gif"    src="eyebrowzr_arm_idle_loop.gif" alt="idle"/>
-          <img id="retract-gif" src="eyebrowzr_arm_retract.gif"   alt="retract"/>
-        </div>
-      </div>
+      <img id="gif-idle"     src="computer_monitor_idle_animation.gif"    alt="idle"/>
+      <img id="gif-intro"    src="homepage_wiretrace_and_arm_sequence.gif" alt="intro"/>
+      <img id="gif-active"   src="homepage_active_idle.gif"               alt="active"/>
+      <img id="gif-retract"  src="homepage_retract_sequence.gif"          alt="retract"/>
     </div>
   </div>
 
@@ -281,37 +172,35 @@
     <button class="splash-btn" id="init-btn">[ INITIALIZE ]</button>
     <button class="splash-btn" id="deactivate-btn">[ DEACTIVATE ]</button>
   </div>
+
 </div>
 
 <script>
-  //  ELEMENTS 
-  const initBtn       = document.getElementById('init-btn');
-  const deactivateBtn = document.getElementById('deactivate-btn');
-  const armGif        = document.getElementById('arm-gif');
-  const idleGif       = document.getElementById('idle-gif');
-  const retractGif    = document.getElementById('retract-gif');
-  const logoAnim      = document.getElementById('logo-anim');
-  const logoStatic    = document.getElementById('logo-static');
-  const logoArmWrap   = document.getElementById('logo-arm-wrap');
-  const terminal      = document.getElementById('terminal');
+  const INTRO_DURATION   = 8000;
+  const RETRACT_DURATION = 5000;
 
-  //  DYNAMIC ARM POSITIONING 
-  // O gap is at ~67% from left of logo
-  const O_GAP_RATIO = 0.67;
+  const gifIdle    = document.getElementById('gif-idle');
+  const gifIntro   = document.getElementById('gif-intro');
+  const gifActive  = document.getElementById('gif-active');
+  const gifRetract = document.getElementById('gif-retract');
+  const initBtn    = document.getElementById('init-btn');
+  const deactBtn   = document.getElementById('deactivate-btn');
 
-  function positionArm() {
-    const logoRect = logoStatic.getBoundingClientRect();
-    const wrapRect = document.getElementById('logo-arm-wrap').getBoundingClientRect();
-    // position relative to the wrap container
-    const oGapX = (logoRect.left - wrapRect.left) + (logoRect.width * O_GAP_RATIO);
-    document.getElementById('arm-layer').style.left = oGapX + 'px';
+  // Show idle on load
+  gifIdle.classList.add('active');
+
+  function restartGif(el) {
+    const src = el.src;
+    el.src = '';
+    el.src = src;
   }
 
-  window.addEventListener('resize', positionArm);
-  window.addEventListener('orientationchange', () => setTimeout(positionArm, 300));
-  const ARM_DURATION     = 9000;
-  const RETRACT_DURATION = 4300;
-  const LASER_DURATION   = 5800;
+  function showOnly(el) {
+    [gifIdle, gifIntro, gifActive, gifRetract].forEach(g => {
+      g.classList.remove('active');
+    });
+    el.classList.add('active');
+  }
 
   //  MUTE 
   let muted = false;
@@ -320,117 +209,38 @@
     document.getElementById('mute-btn').textContent = muted ? '' : '';
   };
 
-  //  TERMINAL 
-  function typeEl(el, text, speed) {
-    return new Promise(res => {
-      let i = 0;
-      const cur = document.getElementById('cur');
-      el.parentNode.insertBefore(cur, el.nextSibling);
-      const t = setInterval(() => {
-        el.textContent += text[i++];
-        if (i >= text.length) { clearInterval(t); setTimeout(res, 250); }
-      }, speed);
-    });
-  }
-
-  async function runTerminal() {
-    await typeEl(document.getElementById('l1'), '> SYSTEM BOOT........OK', 38);
-    await typeEl(document.getElementById('l2'), '> LOADING EYEBROWZR.EXE', 32);
-    await typeEl(document.getElementById('l3'), '> READY TO INITIALIZE', 38);
-  }
-  setTimeout(runTerminal, 500);
-
-  //  HELPERS 
-  function restartGif(el) {
-    const src = el.src;
-    el.src = '';
-    el.src = src;
-  }
-
-  function showArm(el) {
-    [armGif, idleGif, retractGif].forEach(img => img.classList.remove('visible'));
-    restartGif(el);
-    el.classList.add('visible');
-  }
-
-  function setTerminal(l1='', l2='', l3='') {
-    document.getElementById('l1').textContent = l1;
-    document.getElementById('l2').textContent = l2;
-    document.getElementById('l3').textContent = l3;
-  }
-
-  function glitchTerminal(cb) {
-    const gc = '!@#$%^&*<>/\\[]{}01';
-    terminal.classList.add('glitching');
-    const gi = setInterval(() => {
-      ['l1','l2','l3'].forEach(id => {
-        document.getElementById(id).textContent =
-          '> ' + Array.from({length:18}, () => gc[Math.floor(Math.random()*gc.length)]).join('');
-      });
-    }, 80);
-    setTimeout(() => {
-      clearInterval(gi);
-      terminal.classList.remove('glitching');
-      cb();
-    }, 800);
-  }
-
-  //  INITIALIZE — one press only 
+  //  INITIALIZE 
   initBtn.addEventListener('click', () => {
     initBtn.disabled = true;
     initBtn.style.display = 'none';
-    document.getElementById('cur').style.display = 'none';
 
-    glitchTerminal(() => {
-      setTerminal('> INITIALIZING EYEBROWZR...');
+    // Play intro
+    restartGif(gifIntro);
+    showOnly(gifIntro);
 
-      // Show wrap, start arm
-      logoArmWrap.style.opacity = '1';
-      showArm(armGif);
-
-      // Start laser trace 3 seconds after arm begins
-      setTimeout(() => {
-        logoArmWrap.style.opacity = '1';
-        restartGif(logoAnim);
-        logoAnim.style.display = 'block';
-        setTerminal('> RENDERING WORDMARK...');
-
-        // After laser trace finishes swap to static
-        setTimeout(() => {
-          logoAnim.style.display = 'none';
-          logoStatic.style.display = 'block';
-          setTerminal('> SYSTEM ONLINE. ', '> WELCOME TO EYEBROWZR');
-        }, LASER_DURATION);
-
-      }, 3000);
-
-      // After arm finishes swap to idle, show deactivate
-      setTimeout(() => {
-        showArm(idleGif);
-        deactivateBtn.style.display = 'block';
-      }, ARM_DURATION);
-    });
+    // After intro swap to active idle
+    setTimeout(() => {
+      restartGif(gifActive);
+      showOnly(gifActive);
+      deactBtn.style.display = 'block';
+    }, INTRO_DURATION);
   });
 
-  //  DEACTIVATE — one press only 
-  deactivateBtn.addEventListener('click', () => {
-    deactivateBtn.disabled = true;
-    deactivateBtn.style.display = 'none';
+  //  DEACTIVATE 
+  deactBtn.addEventListener('click', () => {
+    deactBtn.disabled = true;
+    deactBtn.style.display = 'none';
 
-    // Hide logo
-    logoStatic.style.display = 'none';
-    logoArmWrap.style.opacity = '0';
+    // Play retract
+    restartGif(gifRetract);
+    showOnly(gifRetract);
 
-    // Retract arm
-    showArm(retractGif);
-    setTerminal('> DEACTIVATING...');
-
-    // After retract — show standby, no reset
+    // After retract go back to idle
     setTimeout(() => {
-      [armGif, idleGif, retractGif].forEach(img => img.classList.remove('visible'));
-      setTerminal('> SYSTEM STANDBY.', '> READY TO INITIALIZE');
-      document.getElementById('cur').style.display = 'inline-block';
-      // No buttons re-enabled — sequence complete
+      restartGif(gifIdle);
+      showOnly(gifIdle);
+      initBtn.style.display = 'block';
+      initBtn.disabled = false;
     }, RETRACT_DURATION);
   });
 </script>
