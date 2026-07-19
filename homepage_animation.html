@@ -43,9 +43,6 @@
       position: relative;
       width: 100%;
     }
-
-    /* BEZEL */
-    #bezel {
       width: 100%;
       height: auto;
       image-rendering: pixelated;
@@ -83,10 +80,8 @@
     /* KEYBOARD PANEL */
     #keyboard {
       width: 100%;
-      background: #08081a;
-      border: 2px solid #1a1a3a;
-      border-top: none;
-      border-radius: 0 0 10px 10px;
+      background: transparent;
+      border: none;
       height: 70px;
       display: flex;
       justify-content: center;
@@ -94,7 +89,6 @@
       gap: 1rem;
       position: relative;
       z-index: 2;
-      box-shadow: 0 6px 30px rgba(0,0,0,0.5);
     }
 
     .splash-btn {
@@ -214,16 +208,22 @@
     initBtn.disabled = true;
     initBtn.style.display = 'none';
 
-    // Play intro
+    // Reset and preload intro gif first
     restartGif(gifIntro);
-    showOnly(gifIntro);
 
-    // After intro swap to active idle
+    // Small delay to let browser process the src reset
     setTimeout(() => {
-      restartGif(gifActive);
-      showOnly(gifActive);
-      deactBtn.style.display = 'block';
-    }, INTRO_DURATION);
+      showOnly(gifIntro);
+
+      // After intro swap to active idle
+      setTimeout(() => {
+        restartGif(gifActive);
+        setTimeout(() => {
+          showOnly(gifActive);
+          deactBtn.style.display = 'block';
+        }, 50);
+      }, INTRO_DURATION);
+    }, 50);
   });
 
   //  DEACTIVATE 
@@ -231,17 +231,23 @@
     deactBtn.disabled = true;
     deactBtn.style.display = 'none';
 
-    // Play retract
+    // Reset and preload retract gif first
     restartGif(gifRetract);
-    showOnly(gifRetract);
 
-    // After retract go back to idle
+    // Small delay to let browser process the src reset
     setTimeout(() => {
-      restartGif(gifIdle);
-      showOnly(gifIdle);
-      initBtn.style.display = 'block';
-      initBtn.disabled = false;
-    }, RETRACT_DURATION);
+      showOnly(gifRetract);
+
+      // After retract go back to idle
+      setTimeout(() => {
+        restartGif(gifIdle);
+        setTimeout(() => {
+          showOnly(gifIdle);
+          initBtn.style.display = 'block';
+          initBtn.disabled = false;
+        }, 50);
+      }, RETRACT_DURATION);
+    }, 50);
   });
 </script>
 
